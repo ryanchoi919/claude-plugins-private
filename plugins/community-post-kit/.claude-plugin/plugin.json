@@ -1,0 +1,8 @@
+{
+  "name": "community-post-kit",
+  "version": "0.1.0",
+  "description": "Voice-driven, approval-gated drafting kit for maker-community posts (Disquiet, Indie Hackers, and other platforms) built from a product's own update notes, with frontmatter-based publish-status tracking.",
+  "author": {
+    "name": "ryanchoi"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "blog-content-pipeline",
+  "version": "0.1.0",
+  "description": "Constitution-driven, approval-gated content pipeline for niche blogs: trend research -> SERP gap analysis -> idea refinement -> fact enrichment -> outline -> asset/metadata -> draft -> SEO vetting -> knowledge capture.",
+  "author": {
+    "name": "ryanchoi"
+  }
+}

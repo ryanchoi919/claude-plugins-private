@@ -1,0 +1,19 @@
+{
+  "name": "ryanchoi-private",
+  "description": "ryanchoi's private Claude Code plugin collection — plugins not (yet) ready or intended for public sharing.",
+  "owner": {
+    "name": "ryanchoi"
+  },
+  "plugins": [
+    {
+      "name": "blog-content-pipeline",
+      "source": "./plugins/blog-content-pipeline",
+      "description": "Constitution-driven, approval-gated content pipeline for niche blogs: trend research -> SERP gap analysis -> idea refinement -> fact enrichment -> outline -> asset/metadata -> draft -> SEO vetting -> knowledge capture."
+    },
+    {
+      "name": "community-post-kit",
+      "source": "./plugins/community-post-kit",
+      "description": "Voice-driven, approval-gated drafting kit for maker-community posts (Disquiet, Indie Hackers, and other platforms) built from a product's own update notes, with frontmatter-based publish-status tracking."
+    }
+  ]
+}

@@ -17,8 +17,7 @@ Private repo — Claude Code needs GitHub access to fetch it (`gh auth status`, 
 
 | Plugin | Description |
 |---|---|
-| [`blog-content-pipeline`](plugins/blog-content-pipeline) | Constitution-driven, approval-gated content pipeline for niche blogs |
-| [`community-post-kit`](plugins/community-post-kit) | Voice-driven drafting kit for maker-community posts (Disquiet, Indie Hackers, ...) with publish-status tracking |
+| _(none yet)_ | |
 
 ## Adding a new plugin
 

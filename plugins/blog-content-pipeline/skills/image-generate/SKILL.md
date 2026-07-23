@@ -17,7 +17,10 @@ Seventh step of the content pipeline, and the **fourth approval gate**. Generate
 
 ## Steps
 
-1. Check both prerequisites above. If `SD_WEBUI_URL` isn't set but the user has mentioned a backend exists, ask once for the URL for this session — don't guess an address.
+1. Check both prerequisites above. If `SD_WEBUI_URL` isn't set, ask the user for it — don't guess an address. Once given, persist it so this doesn't get asked again on every run:
+   - Read `.claude/settings.local.json` at the project root (create it if missing) and merge `{"env": {"SD_WEBUI_URL": "<value>"}}` into it — merge into any existing `env` object, don't overwrite other keys.
+   - This value is machine-specific (a LAN address for one person's local backend), so it must never go in the shared, committed `.claude/settings.json`. Confirm `.claude/settings.local.json` is listed in `.gitignore` at the project root; add it if not (`.claude/settings.local.json` on its own line).
+   - Tell the user it's saved and that it'll auto-load on future sessions in this project — no need to re-enter it or export it manually.
 2. For each Generated-type concept approved in `asset-metadata`, build:
    - **Prompt**: the section's illustration concept, combined with the Visual Identity section's style/palette/mood.
    - **Negative prompt**: the Visual Identity section's "must avoid" list.

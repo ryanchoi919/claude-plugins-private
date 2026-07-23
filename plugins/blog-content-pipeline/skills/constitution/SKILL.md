@@ -5,7 +5,7 @@ description: Set up or update this project's CONSTITUTION.md — the brand voice
 
 # Constitution
 
-Every other skill in this plugin (`trend-retrieve`, `serp-analyze`, `idea-refine`, `fact-enrich`, `outline`, `asset-metadata`, `draft-write`, `seo-vet`, `knowledge-capture`) is content-agnostic by design: none of them hardcode a brand, a voice, or a formatting convention. Instead, each one starts by reading `CONSTITUTION.md` at the project root. This skill creates or updates that file.
+Every other skill in this plugin (`trend-retrieve`, `serp-analyze`, `idea-refine`, `fact-enrich`, `outline`, `asset-metadata`, `image-generate`, `draft-write`, `thumbnail-copy`, `seo-vet`, `knowledge-capture`) is content-agnostic by design: none of them hardcode a brand, a voice, or a formatting convention. Instead, each one starts by reading `CONSTITUTION.md` at the project root. This skill creates or updates that file.
 
 This is what makes the pipeline portable across unrelated blogs: the same plugin, installed into two different repos, produces two very different-sounding posts because it reads two different constitutions.
 
@@ -48,6 +48,14 @@ This is what makes the pipeline portable across unrelated blogs: the same plugin
 - Admonition/callout syntax: <e.g., GitHub-style `> [!tip]`; note anything that's explicitly forbidden, e.g. a shortcode that breaks the build>
 - Multi-language mapping format (if the blog teaches a language): <e.g., native text + romanization (italic) + English translation, each on its own line>
 - Anything else that would break the build if violated: <list>
+
+## Visual Identity
+- Illustration style: <e.g., flat vector illustration, isometric, watercolor, photographic — the visual equivalent of the Voice & Tone persona>
+- Palette: <hex codes or named colors to use>
+- Mood: <e.g., warm and inviting, minimal and clean, playful>
+- Must avoid: <e.g., text baked into the image, stock-photo look, realistic human faces>
+- Generation backend (optional): <e.g., "AUTOMATIC1111 WebUI at $SD_WEBUI_URL", "Adobe Firefly MCP", "none — hand off to designer">
+- Only fill this in if the blog generates in-body illustrations (see the `image-generate` skill). If illustrations are hand-made or not used, write "Not used."
 
 ## Growth Mechanics
 - Lead magnet pattern: <what a lead magnet looks like for this blog, if any>

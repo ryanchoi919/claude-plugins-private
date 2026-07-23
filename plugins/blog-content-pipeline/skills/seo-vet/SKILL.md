@@ -1,11 +1,11 @@
 ---
 name: seo-vet
-description: Step 9 (final) of the content pipeline — vet the draft against every constitution rule and SEO basics, offer to capture any reusable new knowledge, and get final publish approval. Use right after thumbnail-copy.
+description: Step 10 (final) of the content pipeline — vet the draft against every constitution rule and SEO basics, offer to capture any reusable new knowledge, and get final publish approval. Use right after thumbnail-copy.
 ---
 
 # SEO & Brand Vetting
 
-Ninth and final step of the content pipeline, and the **final approval gate**.
+Tenth and final step of the content pipeline, and the **final approval gate**.
 
 ## Steps
 

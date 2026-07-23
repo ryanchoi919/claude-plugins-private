@@ -1,11 +1,11 @@
 ---
 name: draft-write
-description: Step 7 of the content pipeline — write the full post draft in the project's voice, using its custom components and formatting rules, then get fourth-gate approval. Use right after asset-metadata.
+description: Step 8 of the content pipeline — write the full post draft in the project's voice, using its custom components and formatting rules, then get fifth-gate approval. Use right after image-generate.
 ---
 
 # Draft Writer & Humanizer
 
-Seventh step of the content pipeline, and the **fourth approval gate**. Produces the actual post body.
+Eighth step of the content pipeline, and the **fifth approval gate**. Produces the actual post body.
 
 ## Steps
 

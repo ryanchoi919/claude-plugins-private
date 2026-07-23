@@ -26,8 +26,9 @@ Seventh step of the content pipeline, and the **fourth approval gate**. Generate
    ```
    curl -s -X POST "$SD_WEBUI_URL/sdapi/v1/txt2img" \
      -H "Content-Type: application/json" \
-     -d '{"prompt": "...", "negative_prompt": "...", "steps": 25, "cfg_scale": 7, "width": 1024, "height": 1024}'
+     -d '{"prompt": "...", "negative_prompt": "...", "steps": 25, "cfg_scale": 7, "width": 1024, "height": 1024, "save_images": true}'
    ```
+   `save_images: true` matters: A1111's API only returns base64 by default and does **not** write anything to disk on the backend machine unless this is set — without it, a failed transfer or a skill bug loses the generation entirely, with no copy anywhere to recover from. Setting it gives the backend machine's own `outputs/txt2img-images/` a persistent audit trail independent of whatever this skill does with the response.
    Decode the returned base64 image(s) to a temporary PNG.
 4. **Convert to WebP before saving** — never leave the final asset as PNG/JPG. Use a standalone system tool (`cwebp`/ImageMagick), not a Node package like `sharp`: this skill has to work against any target blog's stack (Hugo, Ghost, WordPress, a Node/Astro site, etc.), so the conversion step can't assume the target repo has npm or Node at all.
    ```

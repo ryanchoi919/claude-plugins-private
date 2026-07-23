@@ -15,11 +15,13 @@ Takes a PR from "CI running" to "merged and cleaned up" in one flow: waits on ch
    - If checks are still pending and the user's request implied waiting ("CI 통과되면 머지해줘"), poll on a reasonable interval (e.g. every 30–60s) up to a sane timeout, reporting status changes rather than going silent. If the user asked to check status only, report the current state once and stop.
 3. **Confirm merge method** the first time in a repo: check `gh repo view --json squashMergeAllowed,mergeCommitAllowed,rebaseMergeAllowed,deleteBranchOnMerge` and ask the user's preference if more than one method is allowed and none has been established in this conversation. Reuse that preference for subsequent calls in the same session instead of re-asking every time.
 4. **Merge.** Once green, run `gh pr merge <number> --<method> --delete-branch` (squash/merge/rebase per the resolved method). This is a merge to a shared branch — if the user's original request didn't already give explicit go-ahead to merge automatically once green, confirm right before merging rather than assuming silence means yes.
-5. **Clean up locally.** If the current session is working out of a worktree for this branch, exit and remove it (`ExitWorktree` if available in this session, otherwise `git worktree remove`) after the merge succeeds — never before, in case the merge fails.
-6. **Report** the merged PR URL and what was cleaned up (branch deleted remotely, worktree removed locally).
+5. **Verify the remote branch was actually deleted.** `gh pr merge --delete-branch` can merge successfully while its branch-deletion step fails silently — e.g. it reports a local git error like `'<branch>' is already used by worktree at ...` when another worktree of the same repo has that branch checked out, and the remote branch is left behind despite the flag. Check with `git ls-remote --heads origin <branch>`; if it still lists the branch, delete it manually with `git push origin --delete <branch>` before treating cleanup as done.
+6. **Clean up locally.** If the current session is working out of a worktree for this branch, exit and remove it (`ExitWorktree` if available in this session, otherwise `git worktree remove`) after the merge succeeds — never before, in case the merge fails.
+7. **Report** the merged PR URL and what was actually cleaned up (branch deletion confirmed remotely via step 5, worktree removed locally) — not just what the merge command claimed to do.
 
 ## Rules
 
 - Never merge with failing or pending checks, and never force-merge past branch protection.
 - Don't delete the worktree/branch until the merge has actually succeeded — a failed merge should leave the working state untouched so the user can retry.
 - If the repo has no CI checks configured at all, say so explicitly rather than treating "no checks" the same as "checks passed."
+- Never report "branch deleted" on the strength of `gh pr merge`'s own success message alone — confirm it with `git ls-remote` (step 5). A partial success (PR merged, branch left behind) is easy to miss otherwise.

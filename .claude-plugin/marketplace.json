@@ -18,7 +18,7 @@
     {
       "name": "gh-issue-flow",
       "source": "./plugins/gh-issue-flow",
-      "description": "GitHub issue/PR lifecycle kit built on gh cli: scaffold a well-formed issue from a rough description, pick the next issue to work on (with a worktree started for it), and land an open PR (CI check, merge, worktree/branch cleanup)."
+      "description": "GitHub issue/PR lifecycle kit built on gh cli: create a well-formed issue from a rough description, pick the next issue to work on (with a worktree started for it), and merge an open PR (CI check, merge, worktree/branch cleanup)."
     }
   ]
 }

@@ -1,6 +1,6 @@
 # gh-issue-flow
 
-A Claude Code plugin covering the day-to-day GitHub issue/PR lifecycle on top of `gh` cli: file an issue from a rough description, pick the next one to work on, and land a finished PR.
+A Claude Code plugin covering the day-to-day GitHub issue/PR lifecycle on top of `gh` cli: file an issue from a rough description, pick the next one to work on, and merge a finished PR.
 
 It doesn't replace `gh` — every skill is a set of instructions for Claude to drive `gh` cli well (checking for duplicates, matching a repo's own labels/templates, respecting whatever "in progress" already looks like) instead of running commands ad hoc each time.
 
@@ -8,9 +8,9 @@ It doesn't replace `gh` — every skill is a set of instructions for Claude to d
 
 | Skill | Role |
 |---|---|
-| `scaffold-issue` | Turns a rough bug report / idea / pasted log into a properly titled, structured, labeled GitHub issue — after checking for likely duplicates |
+| `create-issue` | Turns a rough bug report / idea / pasted log into a properly titled, structured, labeled GitHub issue — after checking for likely duplicates |
 | `next-issue` | Recommends what to work on next by filtering open issues against what's already claimed (open PRs, active worktrees); can also judge whether two issues are safe to work on in parallel; starts a worktree for the chosen issue on request |
-| `land-pr` | Waits on CI for an open PR, merges once green (confirming merge method and, unless already authorized, the merge itself), then cleans up the branch and local worktree |
+| `merge-pr` | Waits on CI for an open PR, merges once green (confirming merge method and, unless already authorized, the merge itself), then cleans up the branch and local worktree |
 
 ## Conventions assumed
 
@@ -19,4 +19,4 @@ It doesn't replace `gh` — every skill is a set of instructions for Claude to d
 
 ## Origin
 
-Grew out of three separate plugin ideas (issue scaffolding, next-issue recommendation, PR landing) that all turned out to be stages of the same GitHub issue → work → PR lifecycle, so they ship as one plugin instead of three.
+Grew out of three separate plugin ideas (issue creation, next-issue recommendation, PR merging) that all turned out to be stages of the same GitHub issue → work → PR lifecycle, so they ship as one plugin instead of three.

@@ -19,7 +19,7 @@ Private repo — Claude Code needs GitHub access to fetch it (`gh auth status`, 
 |---|---|
 | [`blog-content-pipeline`](plugins/blog-content-pipeline) | Constitution-driven, approval-gated content pipeline for niche blogs |
 | [`community-post-kit`](plugins/community-post-kit) | Voice-driven drafting kit for maker-community posts (Disquiet, Indie Hackers, ...) with publish-status tracking |
-| [`gh-issue-flow`](plugins/gh-issue-flow) | GitHub issue/PR lifecycle kit on `gh` cli: scaffold an issue, pick the next one to work on, land a PR (CI check, merge, cleanup) |
+| [`gh-issue-flow`](plugins/gh-issue-flow) | GitHub issue/PR lifecycle kit on `gh` cli: create an issue, pick the next one to work on, merge a PR (CI check, merge, cleanup) |
 
 ## Adding a new plugin
 

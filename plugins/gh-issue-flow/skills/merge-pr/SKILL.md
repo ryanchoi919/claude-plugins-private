@@ -1,9 +1,9 @@
 ---
-name: land-pr
-description: Check CI status on an open GitHub PR and, once every check is green, merge it and clean up the local branch/worktree used for it. Use when the user asks to land, merge-when-green, or wrap up a PR (e.g. "ci 통과되면 머지해줘", "이 PR 랜드해줘", "머지되면 정리해줘").
+name: merge-pr
+description: Check CI status on an open GitHub PR and, once every check is green, merge it and clean up the local branch/worktree used for it. Use when the user asks to merge-when-green or wrap up a PR (e.g. "ci 통과되면 머지해줘", "이 PR 머지해줘", "머지되면 정리해줘").
 ---
 
-# Land PR
+# Merge PR
 
 Takes a PR from "CI running" to "merged and cleaned up" in one flow: waits on checks, merges once green, then removes the branch and local worktree.
 

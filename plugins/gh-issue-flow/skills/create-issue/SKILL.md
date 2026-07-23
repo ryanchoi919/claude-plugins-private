@@ -1,9 +1,9 @@
 ---
-name: scaffold-issue
+name: create-issue
 description: Turn a rough bug report, feature idea, or pasted error/log into a well-formed GitHub issue via gh cli — proper title, structured body, and labels matched to the repo's existing label set — after checking for likely duplicates. Use when the user describes a problem or idea and asks to file/create/register it as an issue (e.g. "이슈로 등록해줘", "버그 이슈 만들어줘", "이거 이슈 하나 파줘").
 ---
 
-# Scaffold Issue
+# Create Issue
 
 Converts a free-form description (prose, pasted stack trace, screenshot description, or a short idea) into a properly structured GitHub issue in the target repo, using `gh issue create`.
 

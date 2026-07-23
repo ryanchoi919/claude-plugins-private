@@ -15,7 +15,12 @@ Third step of the content pipeline, and the **first approval gate**. Turns the c
 3. If sources were uploaded, check what's there. For any large file (roughly 50+ pages), don't read it cover to cover — check its table of contents/index first and ask the user which sections actually matter before doing a targeted read.
 4. Treat anything in `sources/` as the highest-trust input for planning — it outranks the general research from `trend-retrieve` and `serp-analyze` when they conflict.
 5. Think through the plan carefully before presenting it — deliberately look for the obvious, generic version of this post and figure out what would make it not that. Produce:
-   - 3-5 candidate titles (in the target audience's language, matching the constitution's voice)
+   - 3-5 candidate titles (in the target audience's language, matching the constitution's voice). Run each candidate through a reader-motivation check before presenting it:
+     - **Recognition**: does it name a concrete situation/symptom the reader sees themselves in, not just a topic noun ("작심삼일" beats "목표 설정")?
+     - **Tension**: does it open a real gap between expectation and reality, or a reason worth knowing ("~하는 이유", a genuine question)?
+     - **Resolution signal**: words like "how to"/"guide"/"method" belong **only** if this post is actually prescriptive (how-to, checklist, comparison verdict). Bolting one onto an explanatory/diagnostic post reads as a mismatch the moment the reader opens it — leave those on tension/recognition instead.
+     - **Credibility**: a number, a named audience, or an explicit comparison target lowers the reader's risk of clicking something thin.
+     If the post also needs a separate short-form/thumbnail copy derived from the title (check the constitution for this), that copy must preserve the title's actual causal relationship — don't invent a solution the title doesn't contain, and don't drop a solution clause the title does contain by only carrying forward the setup half. It should also make sense read with zero surrounding context, since short-form copy rarely gets a subtitle to lean on. If the constitution defines its own title/thumbnail-copy rules (length limits, banned phrasing, taxonomy pillars), those take precedence over this general check.
    - The primary target keyword/phrase
    - A lead magnet concept, if the constitution's Growth Mechanics section uses lead magnets
    - The concrete differentiator versus the SERP gap identified in step 2

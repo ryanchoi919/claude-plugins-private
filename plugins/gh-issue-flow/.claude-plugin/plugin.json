@@ -1,0 +1,8 @@
+{
+  "name": "gh-issue-flow",
+  "version": "0.1.0",
+  "description": "GitHub issue/PR lifecycle kit built on gh cli: create a well-formed issue from a rough description, pick the next issue to work on (with a worktree started for it), and merge an open PR (CI check, merge, worktree/branch cleanup).",
+  "author": {
+    "name": "ryanchoi"
+  }
+}

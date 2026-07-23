@@ -1,0 +1,17 @@
+{
+  "description": "Reminds to check for local worktree/branch cleanup when `gh pr merge` runs directly via Bash, bypassing the merge-pr skill's own cleanup step.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/merge-cleanup-reminder.sh\"",
+            "if": "Bash(gh pr merge:*)"
+          }
+        ]
+      }
+    ]
+  }
+}

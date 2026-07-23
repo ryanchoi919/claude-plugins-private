@@ -12,6 +12,12 @@ It doesn't replace `gh` — every skill is a set of instructions for Claude to d
 | `next-issue` | Recommends what to work on next by filtering open issues against what's already claimed (open PRs, active worktrees); can also judge whether two issues are safe to work on in parallel; starts a worktree for the chosen issue on request |
 | `merge-pr` | Waits on CI for an open PR, merges once green (confirming merge method and, unless already authorized, the merge itself), then cleans up the branch and local worktree |
 
+## Hooks
+
+| Hook | Fires on | Role |
+|---|---|---|
+| `merge-cleanup-reminder` | `PostToolUse` for `Bash(gh pr merge:*)` | Reminds to check for a leftover local worktree/branch when a PR is merged directly via Bash instead of through the `merge-pr` skill |
+
 ## Conventions assumed
 
 - Worktrees are named `<type>-<issue#>-<slug>` (e.g. `fix-118-sync-updatedat`, `feat-232-consistency-goal`), matching an existing convention rather than inventing a new one. `next-issue` checks a repo already follows this before relying on it.

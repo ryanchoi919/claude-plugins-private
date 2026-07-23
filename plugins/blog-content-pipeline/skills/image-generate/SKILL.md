@@ -28,6 +28,13 @@ Seventh step of the content pipeline, and the **fourth approval gate**. Generate
      -H "Content-Type: application/json" \
      -d '{"prompt": "...", "negative_prompt": "...", "steps": 25, "cfg_scale": 7, "width": 1024, "height": 1024}'
    ```
-   Decode the returned base64 image(s) and save under the project's configured asset path (from the constitution's Formatting Rules), using the exact filename already planned in `asset-metadata` — don't invent a different name or path.
-4. If a call fails (connection refused, timeout, non-2xx response) or the backend simply isn't running, don't retry in a loop — report the failure once for that image and fall back to a prompt-only handoff for it, same as when no backend is configured at all.
-5. Report the generated images (file paths) and any prompt-only fallbacks to the user and **wait for explicit approval**. On rejection, fold the user's feedback into the prompt and regenerate, or fall back to manual handoff if they'd rather not iterate. Do not proceed to `draft-write` until approved.
+   Decode the returned base64 image(s) to a temporary PNG.
+4. **Convert to WebP before saving** — never leave the final asset as PNG/JPG. Use whichever conversion tool is available on this machine:
+   ```
+   cwebp -q 82 /tmp/gen.png -o <asset-path>/<filename>.webp   # preferred (libwebp)
+   # or, if cwebp isn't installed:
+   magick /tmp/gen.png -quality 82 <asset-path>/<filename>.webp
+   ```
+   Save under the project's configured asset path (from the constitution's Formatting Rules), reusing the exact filename stem already planned in `asset-metadata` but with a `.webp` extension — don't invent a different name or path. Delete the temporary PNG afterward. If neither `cwebp` nor ImageMagick is available on this machine, say so explicitly and ask the user to install one (`apt install webp` / `brew install webp`) rather than silently saving PNG.
+5. If a call fails (connection refused, timeout, non-2xx response) or the backend simply isn't running, don't retry in a loop — report the failure once for that image and fall back to a prompt-only handoff for it, same as when no backend is configured at all.
+6. Report the generated images (file paths, all `.webp`) and any prompt-only fallbacks to the user and **wait for explicit approval**. On rejection, fold the user's feedback into the prompt and regenerate, or fall back to manual handoff if they'd rather not iterate. Do not proceed to `draft-write` until approved.

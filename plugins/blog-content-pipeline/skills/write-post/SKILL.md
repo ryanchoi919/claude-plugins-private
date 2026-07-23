@@ -1,6 +1,6 @@
 ---
 name: write-post
-description: Master entry point for writing a new blog post — runs the full 8-step pipeline (trend research through SEO vetting) in order, pausing at 5 approval gates. Use when the user asks to write/plan a new post and hasn't specified a single narrower step.
+description: Master entry point for writing a new blog post — runs the full 9-step pipeline (trend research through SEO vetting) in order, pausing at approval gates. Use when the user asks to write/plan a new post and hasn't specified a single narrower step.
 ---
 
 # Write Post — Pipeline Control Tower
@@ -13,7 +13,7 @@ Before anything else, confirm `CONSTITUTION.md` exists at the project root. If i
 
 ## Pipeline order
 
-Run these in sequence. Steps 1-2 and 4 chain automatically with no approval needed in between. Steps 3, 5, 6, 7, 8 each end in an explicit approval gate — do not proceed past a gate until the user has approved that step's output.
+Run these in sequence. Steps 1-2 and 4 chain automatically with no approval needed in between. Steps 3, 5, 6, 7, 8, 9 each end in an explicit approval gate — do not proceed past a gate until the user has approved that step's output.
 
 | # | Skill | Gate after? |
 |---|-------|-------------|
@@ -24,9 +24,10 @@ Run these in sequence. Steps 1-2 and 4 chain automatically with no approval need
 | 5 | `outline` | **yes — 2nd approval** |
 | 6 | `asset-metadata` | **yes — 3rd approval** |
 | 7 | `draft-write` | **yes — 4th approval** |
-| 8 | `seo-vet` | **yes — 5th (final) approval** |
+| 8 | `thumbnail-copy` | **yes — 5th approval** (skip if the project renders no hand-written thumbnail copy — see the skill) |
+| 9 | `seo-vet` | **yes — final approval** |
 
-`seo-vet` may itself offer to invoke `knowledge-capture` before its final approval — that's expected, not a deviation from the plan.
+`thumbnail-copy` runs after the draft on purpose: its copy must be grounded in the finished body, not the title. Skip it only when the constitution says thumbnails carry no hand-written copy. `seo-vet` may itself offer to invoke `knowledge-capture` before its final approval — that's expected, not a deviation from the plan.
 
 ## Rules
 

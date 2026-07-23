@@ -1,11 +1,11 @@
 ---
 name: thumbnail-copy
-description: Step 8 of the content pipeline — write the short display copy that gets rendered on the post's thumbnail/hero image, grounded in the finished draft, and get approval. Use right after draft-write, before seo-vet. Skip if the project doesn't render hand-written copy on its thumbnails.
+description: Step 9 of the content pipeline — write the short display copy that gets rendered on the post's thumbnail/hero image, grounded in the finished draft, and get approval. Use right after draft-write, before seo-vet. Skip if the project doesn't render hand-written copy on its thumbnails.
 ---
 
 # Thumbnail Copy
 
-Eighth step of the content pipeline, and an **approval gate**. Runs after `draft-write` because good thumbnail copy has to be grounded in the actual body — not guessed from the title.
+Ninth step of the content pipeline, and an **approval gate**. Runs after `draft-write` because good thumbnail copy has to be grounded in the actual body — not guessed from the title.
 
 ## When this applies
 

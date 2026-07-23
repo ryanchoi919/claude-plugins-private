@@ -14,6 +14,11 @@
       "name": "community-post-kit",
       "source": "./plugins/community-post-kit",
       "description": "Voice-driven, approval-gated drafting kit for maker-community posts (Disquiet, Indie Hackers, and other platforms) built from a product's own update notes, with frontmatter-based publish-status tracking."
+    },
+    {
+      "name": "gh-issue-flow",
+      "source": "./plugins/gh-issue-flow",
+      "description": "GitHub issue/PR lifecycle kit built on gh cli: scaffold a well-formed issue from a rough description, pick the next issue to work on (with a worktree started for it), and land an open PR (CI check, merge, worktree/branch cleanup)."
     }
   ]
 }

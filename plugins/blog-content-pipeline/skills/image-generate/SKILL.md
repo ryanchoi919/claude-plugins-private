@@ -29,7 +29,7 @@ Seventh step of the content pipeline, and the **fourth approval gate**. Generate
      -d '{"prompt": "...", "negative_prompt": "...", "steps": 25, "cfg_scale": 7, "width": 1024, "height": 1024}'
    ```
    Decode the returned base64 image(s) to a temporary PNG.
-4. **Convert to WebP before saving** — never leave the final asset as PNG/JPG. Use whichever conversion tool is available on this machine:
+4. **Convert to WebP before saving** — never leave the final asset as PNG/JPG. Use a standalone system tool (`cwebp`/ImageMagick), not a Node package like `sharp`: this skill has to work against any target blog's stack (Hugo, Ghost, WordPress, a Node/Astro site, etc.), so the conversion step can't assume the target repo has npm or Node at all.
    ```
    cwebp -q 82 /tmp/gen.png -o <asset-path>/<filename>.webp   # preferred (libwebp)
    # or, if cwebp isn't installed:

@@ -1,16 +1,18 @@
 ---
 name: seo-vet
-description: Step 8 (final) of the content pipeline — vet the draft against every constitution rule and SEO basics, offer to capture any reusable new knowledge, and get final publish approval. Use right after draft-write.
+description: Step 9 (final) of the content pipeline — vet the draft against every constitution rule and SEO basics, offer to capture any reusable new knowledge, and get final publish approval. Use right after thumbnail-copy.
 ---
 
 # SEO & Brand Vetting
 
-Eighth and final step of the content pipeline, and the **fifth (final) approval gate**.
+Ninth and final step of the content pipeline, and the **final approval gate**.
 
 ## Steps
 
 1. Run through this checklist against the approved draft and metadata, and fix anything that fails before reporting:
    - **Brand fit**: does the tone actually match `CONSTITUTION.md`'s Voice & Tone, all the way through — not just the intro?
+   - **Title quality**: read the frontmatter title with zero surrounding context. Does it name a concrete, recognizable situation rather than a bare topic noun, and carry a payoff signal — some answer to "why read this"? Confirm it's faithful to what the draft actually delivers (this is the one point where the full body exists — check the title against it, don't just trust the plan). A prescriptive "how to"/"guide" word must match a post that actually prescribes; a diagnostic post needs a payoff of its own (twist/consequence/non-obvious cause), not a bare topic restatement.
+   - **Thumbnail copy** (only if the project renders hand-written copy on the thumbnail): this was authored in the `thumbnail-copy` step — here, just confirm it exists, is grounded in the draft body, reads cleanly with zero context, and obeys the constitution's thumbnail rules. If it's missing or clearly wasn't run, send it back to `thumbnail-copy` rather than improvising it here. The full authoring method lives in that skill, not this checklist.
    - **Keyword placement**: does the target keyword from `idea-refine` show up naturally in the meta description, at least one H2/H3, and the body?
    - **Frontmatter**: every required field from the constitution present, correctly typed, category value valid, thumbnail filename matches what was actually planned?
    - **Custom components**: every shortcode/component used has correctly closed, correctly cased arguments?

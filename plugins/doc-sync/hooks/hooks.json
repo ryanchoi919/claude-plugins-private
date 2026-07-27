@@ -1,0 +1,17 @@
+{
+  "description": "Fires after a `git commit` runs via Bash, nudging Claude to check whether README/CHANGELOG/API docs need updating for what was just committed.",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/commit-doc-check.sh\"",
+            "if": "Bash(git commit:*)"
+          }
+        ]
+      }
+    ]
+  }
+}

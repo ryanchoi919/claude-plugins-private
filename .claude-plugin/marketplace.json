@@ -19,6 +19,11 @@
       "name": "gh-issue-flow",
       "source": "./plugins/gh-issue-flow",
       "description": "GitHub issue/PR lifecycle kit built on gh cli: create a well-formed issue from a rough description, pick the next issue to work on (with a worktree started for it), and merge an open PR (CI check, merge, worktree/branch cleanup)."
+    },
+    {
+      "name": "doc-sync",
+      "source": "./plugins/doc-sync",
+      "description": "Nudges a doc check right after `git commit` (PostToolUse hook, since Claude Code has no PostCommit event) and updates whichever docs a DOC_MAP.md index says the change affects — not limited to README/CHANGELOG/API docs — via the doc-map and doc-sync skills."
     }
   ]
 }

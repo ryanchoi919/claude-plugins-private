@@ -11,7 +11,7 @@ Keeps a repo's docs from drifting behind the code they describe, using a `DOC_MA
 
 1. **Identify the change.** If triggered by the commit hook, use `git show HEAD` (or `git diff HEAD~1 HEAD`) for what was just committed. If invoked directly, use `git diff` / `git diff --staged`, or whatever range the user points at.
 2. **Consult the doc map.** Look for `DOC_MAP.md` (or `docs/DOC_MAP.md`).
-   - If it exists, use it to find which documented area(s) the change touches — this can be README/CHANGELOG/API docs, but just as easily an architecture doc, an ADR, a runbook, a schema file, or anything else the map lists.
+   - If it exists, use it to find which documented area(s) the change touches — this can be README/CHANGELOG/API docs, but just as easily an architecture doc, an ADR, a runbook, a schema file, or anything else the map lists. Skip entries the map marks `historical` — those are point-in-time records, not living docs to keep in sync.
    - If it doesn't exist, run the `doc-map` skill first rather than guessing at the repo's doc structure from scratch. If building a map isn't wanted right now, fall back to a quick heuristic scan of README/CHANGELOG/docs — but say explicitly that this is best-effort and may miss doc types the repo keeps elsewhere.
 3. **Judge whether an update is warranted**, per matched doc:
    - Public API / interface / CLI flag / config schema changes -> whatever doc the map assigns to that area

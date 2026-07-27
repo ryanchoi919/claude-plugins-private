@@ -1,0 +1,8 @@
+{
+  "name": "doc-sync",
+  "version": "0.1.0",
+  "description": "Detects `git commit` runs and nudges toward keeping README/CHANGELOG/API docs in sync with the change, via a doc-sync skill that does the actual update.",
+  "author": {
+    "name": "ryanchoi"
+  }
+}

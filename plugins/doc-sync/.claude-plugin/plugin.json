@@ -1,7 +1,7 @@
 {
   "name": "doc-sync",
   "version": "0.1.0",
-  "description": "Detects `git commit` runs and nudges toward keeping README/CHANGELOG/API docs in sync with the change, via a doc-sync skill that does the actual update.",
+  "description": "Detects `git commit` runs and nudges toward keeping docs in sync with the change, via a DOC_MAP.md index (doc-map skill) of what docs a repo has and a doc-sync skill that updates whichever ones the change actually affects.",
   "author": {
     "name": "ryanchoi"
   }

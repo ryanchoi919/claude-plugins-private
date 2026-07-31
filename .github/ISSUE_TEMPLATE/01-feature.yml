@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        기능 요청 감사합니다. 파이프라인/스킬 작업의 시작점이 되는 명세이므로 가능한 한 구체적으로 작성해 주세요.
+        파이프라인/스킬 작업의 시작점이 되는 명세이므로 가능한 한 구체적으로 작성한다.
 
   - type: textarea
     id: background

@@ -1,0 +1,6 @@
+# 빈 이슈(자유 양식) 생성을 막고 아래 4종 폼만 사용하도록 강제한다.
+blank_issues_enabled: false
+contact_links:
+  - name: "🔒 보안 취약점 제보"
+    url: https://github.com/ryanchoi919/claude-plugins-private/security/advisories/new
+    about: "보안 이슈는 공개 이슈가 아닌 비공개 보안 권고(Security Advisory)로 제보해 주세요."

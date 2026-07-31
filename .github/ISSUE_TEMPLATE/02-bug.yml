@@ -1,0 +1,64 @@
+name: "🐛 버그 리포트 (Bug)"
+description: "스킬이 문서대로 동작하지 않는 문제를 신고합니다."
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        버그 신고 감사합니다. 재현 가능성이 가장 중요합니다. 보안 취약점은 공개 이슈 대신
+        비공개 채널로 제보해 주세요. (`.github/ISSUE_TEMPLATE/config.yml` 참고)
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: "요약"
+      description: "무슨 일이 일어났는지 한두 문장으로."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "재현 단계"
+      description: "어떤 스킬/워크플로우를 어떤 순서로 실행했는지."
+      placeholder: |
+        1. /blog-content-pipeline:outline 실행
+        2. ... 승인
+        3. 오류 발생
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "기대 동작"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: "실제 동작"
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: "환경"
+      description: "Claude Code 버전, 플러그인/스킬 버전, 대상 프로젝트 종류 등."
+      placeholder: |
+        - Claude Code: 1.x
+        - 플러그인: blog-content-pipeline@x.y.z
+        - 대상 프로젝트: (예: tech-blogs)
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "스크린샷 / 로그"
+      description: "에이전트 출력, 오류 메시지, 스크린샷 등."
+    validations:
+      required: false

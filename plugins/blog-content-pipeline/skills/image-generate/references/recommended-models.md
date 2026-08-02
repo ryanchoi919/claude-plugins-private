@@ -4,9 +4,9 @@ Reference list for `image-generate`'s model-routing step. Kept out of `SKILL.md`
 
 ## How this is used
 
-1. `image-generate` queries `GET $SD_WEBUI_URL/sdapi/v1/sd-models` for what's actually loadable on this backend right now.
-2. It matches the returned `model_name`/`title` values against the **Name patterns** column below (case-insensitive substring match) for the current image's use case.
-3. First match wins. If nothing matches, fall back to whichever checkpoint is currently active (`GET $SD_WEBUI_URL/sdapi/v1/options`) and tell the user generation may not match the intended style.
+1. `image-generate` queries `GET $COMFYUI_URL/object_info/CheckpointLoaderSimple` for what's actually installed on this backend right now.
+2. It matches the returned `ckpt_name` enum values against the **Name patterns** column below (case-insensitive substring match) for the current image's use case.
+3. First match wins, and the matched name is written into the selected workflow file's `Checkpoint` node before submission (see `SKILL.md`'s Workflow files section). If nothing matches, fall back to whatever `ckpt_name` the workflow file already has and tell the user generation may not match the intended style.
 
 ## By use case
 

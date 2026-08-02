@@ -24,6 +24,11 @@
       "name": "doc-sync",
       "source": "./plugins/doc-sync",
       "description": "Nudges a doc check right after `git commit` (PostToolUse hook, since Claude Code has no PostCommit event) and updates whichever docs a DOC_MAP.md index says the change affects — not limited to README/CHANGELOG/API docs — via the doc-map and doc-sync skills."
+    },
+    {
+      "name": "repo-health-audit",
+      "source": "./plugins/repo-health-audit",
+      "description": "Recurring full-repo health check across security/UX/performance/DB lenses: scans the whole codebase (not a diff), files GitHub issues only for P0/P1 findings, and opens auto-fix PRs for the mechanical ones — while deferring to the target repo's own branch/commit/PR conventions."
     }
   ]
 }

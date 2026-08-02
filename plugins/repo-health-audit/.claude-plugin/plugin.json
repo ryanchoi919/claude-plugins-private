@@ -1,0 +1,8 @@
+{
+  "name": "repo-health-audit",
+  "version": "0.1.0",
+  "description": "Daily full-repo health audit across security/UX/performance/DB lenses: scans the whole codebase (not just a diff), files GitHub issues for P0/P1 findings only, and opens auto-fix PRs for the mechanical ones.",
+  "author": {
+    "name": "ryanchoi"
+  }
+}

@@ -4,6 +4,8 @@ Baseline negative-prompt terms for `image-generate`, applied to **every** genera
 
 Merge these with the Visual Identity section's "must avoid" list (dedupe overlapping terms) before writing the `Negative Prompt` node. Never drop the baseline even if a Visual Identity section defines its own negative list — that list is written by someone thinking about style and composition, not anatomy, and won't cover this on its own.
 
+`workflows/illustration.json` already has this exact term list baked directly into its negative-prompt node (ahead of the `{{NEGATIVE_EXTRA}}` placeholder) — if this baseline changes, mirror the edit there too, they're meant to stay identical.
+
 ## Anatomy (hands, feet, limbs)
 
 ```

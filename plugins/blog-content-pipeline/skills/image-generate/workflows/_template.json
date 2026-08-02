@@ -1,66 +1,59 @@
 {
-  "3": {
-    "class_type": "KSampler",
-    "_meta": { "title": "Sampler" },
+  "1": {
+    "class_type": "CheckpointLoaderSimple",
     "inputs": {
-      "seed": 0,
-      "steps": 22,
-      "cfg": 6.0,
-      "sampler_name": "dpmpp_2m",
-      "scheduler": "karras",
-      "denoise": 1.0,
-      "model": ["4", 0],
-      "positive": ["6", 0],
-      "negative": ["7", 0],
-      "latent_image": ["5", 0]
+      "ckpt_name": "<checkpoint filename installed on the target backend>"
+    }
+  },
+  "2": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "<fixed style tags for this use case>, {{SCENE_PROMPT}}",
+      "clip": ["1", 1]
+    }
+  },
+  "3": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "<fixed baseline negatives — mirror references/default-negative-prompts.md>, {{NEGATIVE_EXTRA}}",
+      "clip": ["1", 1]
     }
   },
   "4": {
-    "class_type": "CheckpointLoaderSimple",
-    "_meta": { "title": "Checkpoint" },
-    "inputs": {
-      "ckpt_name": "sd_xl_base_1.0.safetensors"
-    }
-  },
-  "5": {
     "class_type": "EmptyLatentImage",
-    "_meta": { "title": "Latent Image" },
     "inputs": {
       "width": 1024,
       "height": 1024,
       "batch_size": 1
     }
   },
-  "6": {
-    "class_type": "CLIPTextEncode",
-    "_meta": { "title": "Positive Prompt" },
+  "5": {
+    "class_type": "KSampler",
     "inputs": {
-      "text": "",
-      "clip": ["4", 1]
+      "model": ["1", 0],
+      "positive": ["2", 0],
+      "negative": ["3", 0],
+      "latent_image": ["4", 0],
+      "seed": 0,
+      "steps": 25,
+      "cfg": 6,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1
+    }
+  },
+  "6": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": ["5", 0],
+      "vae": ["1", 2]
     }
   },
   "7": {
-    "class_type": "CLIPTextEncode",
-    "_meta": { "title": "Negative Prompt" },
-    "inputs": {
-      "text": "",
-      "clip": ["4", 1]
-    }
-  },
-  "8": {
-    "class_type": "VAEDecode",
-    "_meta": { "title": "VAE Decode" },
-    "inputs": {
-      "samples": ["3", 0],
-      "vae": ["4", 2]
-    }
-  },
-  "9": {
     "class_type": "SaveImage",
-    "_meta": { "title": "Output" },
     "inputs": {
-      "filename_prefix": "image-generate",
-      "images": ["8", 0]
+      "images": ["6", 0],
+      "filename_prefix": "image-generate"
     }
   }
 }

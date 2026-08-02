@@ -18,7 +18,7 @@
   "3": {
     "class_type": "CLIPTextEncode",
     "inputs": {
-      "text": "a flat style vector illustration, flat color, vector art, illustration, cel shading, {{SCENE_PROMPT}}",
+      "text": "a flat style vector illustration, flat color, vector art, illustration, cel shading, simple coloring, {{SCENE_PROMPT}}",
       "clip": ["2", 1]
     }
   },

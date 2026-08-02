@@ -55,7 +55,7 @@ This is what makes the pipeline portable across unrelated blogs: the same plugin
 - Palette: <hex codes or named colors to use>
 - Mood: <e.g., warm and inviting, minimal and clean, playful>
 - Must avoid: <e.g., text baked into the image, stock-photo look, realistic human faces>
-- Generation backend (optional): <e.g., "AUTOMATIC1111 WebUI at $SD_WEBUI_URL", "Adobe Firefly MCP", "none — hand off to designer">
+- Generation backend (optional): <e.g., "ComfyUI at $COMFYUI_URL", "Adobe Firefly MCP", "none — hand off to designer">
 - Only fill this in if the blog generates in-body illustrations (see the `image-generate` skill). If illustrations are hand-made or not used, write "Not used."
 
 ## Growth Mechanics

@@ -1,20 +1,20 @@
 # Recommended models for local generation
 
-Reference list for `image-generate`'s model-routing step. Kept out of `SKILL.md` on purpose: the local model ecosystem shifts faster than the skill's routing logic should have to, so this file is the thing to edit when a new model family becomes the better default — not the skill body.
+Reference for **authoring or updating** a `workflows/*.json` file — this skill no longer queries the backend for installed checkpoints at runtime (see `SKILL.md`'s Workflow files section: the checkpoint/LoRA pairing is baked into each workflow file as a validated recipe, not chosen dynamically per request). Kept out of `SKILL.md` on purpose: the local model ecosystem shifts faster than the skill's logic should have to, so this file is the thing to edit when a new model family becomes the better default for a workflow you're (re)building.
 
-## How this is used
+## Currently validated
 
-1. `image-generate` queries `GET $SD_WEBUI_URL/sdapi/v1/sd-models` for what's actually loadable on this backend right now.
-2. It matches the returned `model_name`/`title` values against the **Name patterns** column below (case-insensitive substring match) for the current image's use case.
-3. First match wins. If nothing matches, fall back to whichever checkpoint is currently active (`GET $SD_WEBUI_URL/sdapi/v1/options`) and tell the user generation may not match the intended style.
+`workflows/illustration.json` bakes in `sd_xl_base_1.0.safetensors` + the `flat_vector_art_xl.safetensors` LoRA (`strength_model`/`strength_clip` 0.9) — confirmed to produce consistent flat-vector blog illustrations. Known limitation: complex poses (crossed legs, overlapping hands) can still distort occasionally even with this combo — spot-check results (this skill's self-screening step exists for exactly this).
 
-## By use case
+## By use case (for building a new workflow file)
 
 | Use case | Preferred family | Name patterns to match | VRAM floor |
 |---|---|---|---|
 | General blog illustration (flat/vector, non-photoreal) | SDXL-based illustration checkpoint, or FLUX.2 Klein 4B (quantized) | `sdxl`, `illustri`, `flux.2.*klein`, `flux.*schnell` | 8GB (SDXL) / 12GB (FLUX small) |
 | Photographic / mood-driven feature image | FLUX.1 (dev or schnell) | `flux.1`, `flux-dev`, `flux-schnell` | 12GB+ |
 | Korean-text infographic — background/illustration layer only | same as general illustration | same as above | 8GB+ |
+
+If a backend doesn't have the checkpoint/LoRA a workflow file names, that's a setup gap to fix on the backend (install the missing file, or re-author the workflow against what's actually installed) — not something to patch around at request time; see `SKILL.md` step 3.
 
 **Korean-text infographics never get their text from the diffusion model.** No checkpoint in this list renders Korean glyphs reliably — this is a model-family limitation, not a quality gap a better prompt fixes. Generate only the background/illustration through the matched model above; composite the actual Korean text and numbers separately via HTML/SVG. Treat this as a hard rule in the routing logic, not a fallback for low-quality output.
 

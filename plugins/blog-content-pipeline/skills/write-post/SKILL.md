@@ -23,7 +23,7 @@ Run these in sequence. Steps 1-2 and 4 chain automatically with no approval need
 | 4 | `fact-enrich` | no |
 | 5 | `outline` | **yes — 2nd approval** |
 | 6 | `asset-metadata` | **yes — 3rd approval** |
-| 7 | `image-generate` | **yes — 4th approval** (skip if the constitution has no Visual Identity section or no generation backend is configured — see the skill) |
+| 7 | `image-generate` | **yes — 4th approval** (runs per asset — a Generated-type asset without a Visual Identity section/backend, or a Diagram/capture-type asset without a usable source, falls back to manual handoff rather than skipping the whole step — see the skill) |
 | 8 | `draft-write` | **yes — 5th approval** |
 | 9 | `thumbnail-copy` | **yes — 6th approval** (skip if the project renders no hand-written thumbnail copy — see the skill) |
 | 10 | `seo-vet` | **yes — final approval** |

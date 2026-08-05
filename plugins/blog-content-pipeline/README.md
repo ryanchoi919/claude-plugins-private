@@ -33,7 +33,7 @@ Since this is a private repository, Claude Code needs GitHub access to fetch it 
 | `fact-enrich` | Step 4 — verify and enrich facts against the knowledge base |
 | `outline` | Step 5 — H1-H3 structure + FAQ + **2nd approval gate** |
 | `asset-metadata` | Step 6 — visual asset plan + frontmatter + **3rd approval gate** |
-| `image-generate` | Step 7 — generate approved in-body illustrations via a configured backend + **4th approval gate** |
+| `image-generate` | Step 7 — produce approved in-body visuals: AI-generate illustrations via a configured backend, or source/capture diagram-and-reference images from the web or official materials + **4th approval gate** |
 | `draft-write` | Step 8 — full draft in brand voice + **5th approval gate** |
 | `thumbnail-copy` | Step 9 — hand-written thumbnail/hero display copy, grounded in the draft + **6th approval gate** |
 | `seo-vet` | Step 10 — final checklist vetting + **7th (final) approval gate** |

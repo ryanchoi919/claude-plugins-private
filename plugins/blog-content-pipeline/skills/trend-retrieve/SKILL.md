@@ -15,9 +15,9 @@ First step of the content pipeline. Given a seed topic or keyword, find out what
    - A Perplexity or other research-oriented MCP tool, if connected
    - `WebSearch` + `WebFetch` otherwise
 4. Cost-control rule: compose **one** comprehensive query/prompt rather than several small ones. Ask for everything you need in a single pass — e.g., "What are the top 3 pain points persona X faces with topic Y, and what are the top 3 things they'd need to know or say to handle it?"
-5. Optional trend signal: check whether this project has `scripts/keyword_trends.py` (e.g. `ls scripts/keyword_trends.py`). If it exists:
+5. Optional trend signal: this plugin ships a self-contained helper script (no project setup needed — it declares its own dependency inline and runs via `uv run`). Attempt it once:
    - Decide `--geo`: if the constitution's Audience section names a specific country/region for the readers, use that country's ISO 3166-1 alpha-2 code (e.g. `--geo KR`); otherwise omit `--geo` entirely (worldwide).
-   - Run once: `python scripts/keyword_trends.py related --seed "<seed topic>" [--geo <code>]`.
+   - Run once: `uv run "${CLAUDE_PLUGIN_ROOT}/scripts/keyword_trends.py" related --seed "<seed topic>" [--geo <code>]`.
    - Its JSON output (`top`/`rising` related queries) reflects Google's actual relative search interest — fold any genuinely new phrasing or derived interest it surfaces into the pain points from step 3. It is a 0-100 relative index, never an absolute search count — do not describe it as one.
-   - If the script doesn't exist in this project, or its output is `{"error": ...}`, skip this signal silently and continue — it's optional tooling this project may not have, not a required input.
+   - If `uv` isn't available in this environment, or the command fails for any reason (a non-zero exit, or output of `{"error": ...}`), skip this signal silently and continue — it's an optional research aid, never a required input.
 6. Do not report back yet — hold the findings in context and proceed directly to the `serp-analyze` skill. No user approval is needed at this stage (the first approval gate is after `idea-refine`).

@@ -27,4 +27,10 @@ Third step of the content pipeline, and the **first approval gate**. Turns the c
    - A lead magnet concept, if the constitution's Growth Mechanics section uses lead magnets
    - The concrete differentiator versus the SERP gap identified in step 2
    - Whether/how any uploaded sources shaped the plan
-6. Report this plan to the user and **wait for explicit approval**. Do not proceed to `fact-enrich` until the user approves — if they ask for changes, revise and re-present.
+6. Optional trend signal: this plugin ships a self-contained helper script (no project setup needed — it declares its own dependency inline and runs via `uv run`). Attempt it once:
+   - Collect the distinct target keyword candidates implied by the title candidates above. Deduplicate them and cap at 5 (the tool compares at most 5 terms at once). If fewer than 2 distinct candidates remain, skip this step entirely.
+   - Decide `--geo` the same way as in `trend-retrieve`: a country/region named in the constitution's Audience section → that ISO 3166-1 alpha-2 code; otherwise omit `--geo`.
+   - Run once: `uv run "${CLAUDE_PLUGIN_ROOT}/scripts/keyword_trends.py" compare --keywords "<kw1>" "<kw2>" ... [--geo <code>]`.
+   - Its JSON output's `averages` dict is a 0-100 relative index per keyword, never an absolute search count. Fold it into the plan as one comparison sentence (e.g. "X가 Y보다 상대적으로 더 많이 검색됨") — never state or imply a specific monthly search volume from this data.
+   - If `uv` isn't available in this environment, or the command fails for any reason (a non-zero exit, or output of `{"error": ...}`), skip this signal silently and continue.
+7. Report this plan to the user and **wait for explicit approval**. Do not proceed to `fact-enrich` until the user approves — if they ask for changes, revise and re-present.

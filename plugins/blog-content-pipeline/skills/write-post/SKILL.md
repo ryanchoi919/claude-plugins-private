@@ -23,12 +23,12 @@ Run these in sequence. Steps 1-2 and 4 chain automatically with no approval need
 | 4 | `fact-enrich` | no |
 | 5 | `outline` | **yes — 2nd approval** |
 | 6 | `asset-metadata` | **yes — 3rd approval** |
-| 7 | `image-generate` | **yes — 4th approval** (runs per asset — a Generated-type asset without a Visual Identity section/backend, or a Diagram/capture-type asset without a usable source, falls back to manual handoff rather than skipping the whole step — see the skill) |
-| 8 | `draft-write` | **yes — 5th approval** |
+| 7 | `draft-write` | **yes — 4th approval** |
+| 8 | `image-generate` | **yes — 5th approval** (runs per asset — a Generated-type asset without a Visual Identity section/backend, or a Diagram/capture-type asset without a usable source, falls back to manual handoff rather than skipping the whole step — see the skill) |
 | 9 | `thumbnail-copy` | **yes — 6th approval** (skip if the project renders no hand-written thumbnail copy — see the skill) |
 | 10 | `seo-vet` | **yes — final approval** |
 
-`image-generate` runs right after the asset plan is approved, since its prompts come from that plan, not the finished draft. `thumbnail-copy` runs after the draft on purpose: its copy must be grounded in the finished body, not the title. Skip it only when the constitution says thumbnails carry no hand-written copy. `seo-vet` may itself offer to invoke `knowledge-capture` before its final approval — that's expected, not a deviation from the plan.
+`asset-metadata` only plans which images are needed and where — actual prompt-finalization and generation happen in `image-generate`, which now runs after `draft-write` on purpose: grounding prompts in the finished body avoids guessing at a concept from the outline alone and avoids generating images for sections that get cut or reshaped while drafting. `thumbnail-copy` runs after the draft for the same reason: its copy must be grounded in the finished body, not the title. Skip it only when the constitution says thumbnails carry no hand-written copy. `seo-vet` may itself offer to invoke `knowledge-capture` before its final approval — that's expected, not a deviation from the plan.
 
 ## Rules
 

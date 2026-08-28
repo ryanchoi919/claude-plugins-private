@@ -5,7 +5,7 @@ description: Set up or update this project's CONSTITUTION.md — the brand voice
 
 # Constitution
 
-Every other skill in this plugin (`trend-retrieve`, `serp-analyze`, `idea-refine`, `fact-enrich`, `outline`, `asset-metadata`, `image-generate`, `draft-write`, `thumbnail-copy`, `seo-vet`, `knowledge-capture`) is content-agnostic by design: none of them hardcode a brand, a voice, or a formatting convention. Instead, each one starts by reading `CONSTITUTION.md` at the project root. This skill creates or updates that file.
+Every other skill in this plugin (`trend-retrieve`, `serp-analyze`, `idea-refine`, `fact-enrich`, `outline`, `asset-metadata`, `draft-write`, `image-generate`, `thumbnail-copy`, `seo-vet`, `knowledge-capture`) is content-agnostic by design: none of them hardcode a brand, a voice, or a formatting convention. Instead, each one starts by reading `CONSTITUTION.md` at the project root. This skill creates or updates that file.
 
 This is what makes the pipeline portable across unrelated blogs: the same plugin, installed into two different repos, produces two very different-sounding posts because it reads two different constitutions.
 

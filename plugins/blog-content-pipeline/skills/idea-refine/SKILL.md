@@ -9,12 +9,8 @@ Third step of the content pipeline, and the **first approval gate**. Turns the c
 
 ## Steps
 
-1. Create the post's dedicated working folder: `content/posts/{category}/{slug}/sources/` (adjust the base path if the constitution specifies a different content directory). `{category}` must be one of the categories listed in `CONSTITUTION.md`'s Content Taxonomy.
-2. Ask the user to drop any reference material into that `sources/` folder — source textbooks, screenshots, existing data, prior drafts — before planning continues:
-   > "If you have any reference material for this topic (source documents, screenshots, data, prior notes), drop it in `content/posts/{category}/{slug}/sources/` now and reply 'ready' — or reply 'no sources' to skip."
-3. If sources were uploaded, check what's there. For any large file (roughly 50+ pages), don't read it cover to cover — check its table of contents/index first and ask the user which sections actually matter before doing a targeted read.
-4. Treat anything in `sources/` as the highest-trust input for planning — it outranks the general research from `trend-retrieve` and `serp-analyze` when they conflict.
-5. Think through the plan carefully before presenting it — deliberately look for the obvious, generic version of this post and figure out what would make it not that. Produce:
+1. Create the post's dedicated working folder: `content/posts/{category}/{slug}/sources/` (adjust the base path if the constitution specifies a different content directory). `{category}` must be one of the categories listed in `CONSTITUTION.md`'s Content Taxonomy. Just create the folder — don't ask the user for anything yet.
+2. Think through the plan carefully before presenting it, using only the general research already gathered by `trend-retrieve` and `serp-analyze` (no source material yet — that comes later, once the angle below is settled). Deliberately look for the obvious, generic version of this post and figure out what would make it not that. Produce:
    - A one-sentence statement of exactly who this single post is for — the specific reader, not the blog's whole audience (e.g. not "people who set goals" but "people who built an elaborate goal system in a tool, then burned out maintaining it"). Write titles and any thumbnail copy FOR that reader so they think "this is me," not in a third-person observer voice about "people who…". If the constitution defines a per-post audience field (e.g. frontmatter `targetAudience`), record it there. Everything below is applied after this reader is pinned down.
    - 3-5 candidate titles (in the target audience's language, matching the constitution's voice). Run each candidate through a reader-motivation check before presenting it:
      - **Recognition**: does it name a concrete situation/symptom the reader sees themselves in, not just a topic noun ("작심삼일" beats "목표 설정")?
@@ -25,12 +21,17 @@ Third step of the content pipeline, and the **first approval gate**. Turns the c
    - Note: the short display copy that gets rendered on a thumbnail/hero image (if the project uses one) is a **separate artifact from this SEO title** and is authored later, in the `thumbnail-copy` step — after the draft exists, since good thumbnail copy has to be grounded in the actual body. Don't try to finalize thumbnail copy here; just make the title itself strong.
    - The primary target keyword/phrase
    - A lead magnet concept, if the constitution's Growth Mechanics section uses lead magnets
-   - The concrete differentiator versus the SERP gap identified in step 2
-   - Whether/how any uploaded sources shaped the plan
-6. Optional trend signal: this plugin ships a self-contained helper script (no project setup needed — it declares its own dependency inline and runs via `uv run`). Attempt it once:
+   - The concrete differentiator versus the SERP gap identified in `serp-analyze`
+3. Optional trend signal: this plugin ships a self-contained helper script (no project setup needed — it declares its own dependency inline and runs via `uv run`). Attempt it once:
    - Collect the distinct target keyword candidates implied by the title candidates above. Deduplicate them and cap at 5 (the tool compares at most 5 terms at once). If fewer than 2 distinct candidates remain, skip this step entirely.
    - Decide `--geo` the same way as in `trend-retrieve`: a country/region named in the constitution's Audience section → that ISO 3166-1 alpha-2 code; otherwise omit `--geo`.
    - Run once: `uv run "${CLAUDE_PLUGIN_ROOT}/scripts/keyword_trends.py" compare --keywords "<kw1>" "<kw2>" ... [--geo <code>]`.
    - Its JSON output's `averages` dict is a 0-100 relative index per keyword, never an absolute search count. Fold it into the plan as one comparison sentence (e.g. "X가 Y보다 상대적으로 더 많이 검색됨") — never state or imply a specific monthly search volume from this data.
    - If `uv` isn't available in this environment, or the command fails for any reason (a non-zero exit, or output of `{"error": ...}`), skip this signal silently and continue.
-7. Report this plan to the user and **wait for explicit approval**. Do not proceed to `fact-enrich` until the user approves — if they ask for changes, revise and re-present.
+4. Present this draft plan to the user and ask them to converge on an angle — approve one title direction (even if the exact wording isn't final) before moving on:
+   > "이 방향(제목 후보/타겟독자/차별점)으로 괜찮을까요? 앵글이 정해지면 참고 자료를 요청드릴게요."
+   This is a narrower check than the final approval in step 7 — its only job is to pin down the angle before asking the user to go find reference material for it. If the user's answer reshapes the angle substantially, revise and re-present this draft plan before moving on.
+5. Once the angle is settled, ask the user to drop any reference material into the `sources/` folder created in step 1 — source textbooks, screenshots, existing data, prior drafts:
+   > "이제 자료를 넣어주세요 — 참고할 소스 문서/스크린샷/데이터/기존 노트가 있다면 `content/posts/{category}/{slug}/sources/`에 넣고 'ready'라고 답해주세요. 없다면 'no sources'라고 답해주세요."
+6. If sources were uploaded, check what's there. For any large file (roughly 50+ pages), don't read it cover to cover — check its table of contents/index first and ask the user which sections actually matter before doing a targeted read. Treat anything in `sources/` as the highest-trust input for planning — it outranks the general research from `trend-retrieve` and `serp-analyze` when they conflict. If a source contradicts or meaningfully reshapes the angle agreed on in step 4 (e.g. it reveals the intended differentiator is already covered elsewhere, or surfaces a stronger angle), revise the plan and say plainly what changed and why — don't quietly patch around the conflict.
+7. Report the final plan (noting whether/how any uploaded sources shaped it) to the user and **wait for explicit approval**. Do not proceed to `fact-enrich` until the user approves — if they ask for changes, revise and re-present.

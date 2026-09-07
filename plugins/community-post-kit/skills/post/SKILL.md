@@ -21,8 +21,9 @@ Confirm `marketing/community-posts/VOICE.md` exists at the project root. If it d
    - Don't just translate one draft into the other language — each platform gets its own opening hook and structure per VOICE.md, even when covering the same underlying update.
    - Reuse the product one-liner(s) and links from VOICE.md verbatim rather than re-deriving them.
    - If the user asks for only one platform, draft only that one — don't force every platform every time.
-3. **Approval gate.** Show all drafted platforms together and ask for changes. Iterate until the user approves. Do not save anything before approval.
-4. **Save.** Once approved, write each platform's final draft to its own file at `marketing/community-posts/posts/<platform>/<YYYY-MM-DD>-<slug>.md`, where `<platform>` is that section's `Folder key` field in VOICE.md and `<slug>` is a short kebab-case label derived from the update's topic (not from the date). Create the platform directory if it doesn't exist yet. Each file starts with YAML frontmatter, then the post body:
+3. **Cross-check VOICE.md's common checklist, if it has one.** Re-scan VOICE.md for a section that isn't scoped to any single platform — a cross-platform review list such as "AI 흔적 제거" or a shared must-avoid/anti-pattern list (naming varies per project). If one exists, hold each platform draft you just wrote against every item in it and fix anything that violates it before moving on. If VOICE.md has no such section, there's nothing to check — move on silently, no error or warning.
+4. **Approval gate.** Show all drafted platforms together and ask for changes. Iterate until the user approves. Do not save anything before approval.
+5. **Save.** Once approved, write each platform's final draft to its own file at `marketing/community-posts/posts/<platform>/<YYYY-MM-DD>-<slug>.md`, where `<platform>` is that section's `Folder key` field in VOICE.md and `<slug>` is a short kebab-case label derived from the update's topic (not from the date). Create the platform directory if it doesn't exist yet. Each file starts with YAML frontmatter, then the post body:
 
    ```markdown
    ---

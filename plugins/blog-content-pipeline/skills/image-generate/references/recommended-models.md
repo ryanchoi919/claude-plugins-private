@@ -1,5 +1,7 @@
 # Recommended models for local generation
 
+Applies only to the **legacy ComfyUI path** (see `SKILL.md`'s "Legacy: ComfyUI (optional)" section) — the default Codex `imagegen`/`mcp-image` routing doesn't select a local checkpoint at all, so this file is irrelevant to it.
+
 Reference for **authoring or updating** a `workflows/*.json` file — this skill no longer queries the backend for installed checkpoints at runtime (see `SKILL.md`'s Workflow files section: the checkpoint/LoRA pairing is baked into each workflow file as a validated recipe, not chosen dynamically per request). Kept out of `SKILL.md` on purpose: the local model ecosystem shifts faster than the skill's logic should have to, so this file is the thing to edit when a new model family becomes the better default for a workflow you're (re)building.
 
 ## Currently validated

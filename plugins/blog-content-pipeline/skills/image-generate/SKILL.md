@@ -1,6 +1,6 @@
 ---
 name: image-generate
-description: Step 8 of the content pipeline — produce the in-body visuals planned in asset-metadata, either by AI-generating illustrations through a configured local backend or by sourcing/capturing diagram-and-reference images from the web or official materials, then get fifth-gate approval. Use right after draft-write. Skip entirely only if asset-metadata approved no in-body visuals at all.
+description: Step 8 of the content pipeline — produce the in-body visuals planned in asset-metadata, either by AI-generating illustrations through Codex imagegen/mcp-image (or a legacy ComfyUI backend) or by sourcing/capturing diagram-and-reference images from the web or official materials, then get fifth-gate approval. Use right after draft-write. Skip entirely only if asset-metadata approved no in-body visuals at all.
 ---
 
 # Image Generator
@@ -20,11 +20,34 @@ A single asset batch from `asset-metadata` will often contain both types — pro
 
 Requires both of the following to be true for this asset:
 1. `CONSTITUTION.md` has a filled-in **Visual Identity** section — not missing, not "Not used.", not the raw template placeholder.
-2. A generation backend is actually reachable: the `COMFYUI_URL` environment variable points at a running ComfyUI server (e.g. `http://192.168.x.x:8188`), whether reached through the `comfyui` MCP server (preferred, see step 1) or by raw HTTP calls as a fallback.
+2. A generation backend is actually reachable — see [Backend routing](#backend-routing) below. Default: Codex's `imagegen` tool. Alternative: the `mcp-image` MCP server. Legacy/optional: a ComfyUI backend, only when a project explicitly still requires it.
 
-If either is missing, **do not block the pipeline**: report which one is missing, hand the approved prompt/brief to the user as-is (for their designer or manual generation later), and move on to this asset's next sibling (or to `draft-write` if it was the last one).
+If nothing in the routing below is reachable, **do not block the pipeline**: report which backends were checked and found unavailable, hand the approved prompt/brief to the user as-is (for their designer or manual generation later), and move on to this asset's next sibling (or to `draft-write` if it was the last one).
 
-### Workflow files
+### Building the prompt
+
+For each Generated-type concept approved in `asset-metadata`, build the following. This is backend-independent — the same prompt/negative-prompt/dimensions are used whichever backend the routing below ends up calling (the legacy ComfyUI path adapts them into its own placeholder format — see [Legacy: ComfyUI (optional)](#legacy-comfyui-optional)):
+
+- **Prompt**: the section's illustration concept as approved in `asset-metadata`, refined against the section's actual drafted text (now available, since this step runs after `draft-write`) rather than the outline alone, combined with the Visual Identity section's full style/palette/mood (e.g. "flat style vector illustration" plus its color palette and mood descriptors) — state the style explicitly every time; unlike the legacy ComfyUI workflow files, neither Codex `imagegen` nor `mcp-image` has fixed style tags baked in ahead of time. Default to `plain solid background, no pattern` unless the concept specifically calls for a detailed scene — abstract/conceptual words in a prompt (e.g. "streak", "series", "network") can get misread by the model as a diagram or circuit-board motif instead of the intended persona scene. If this image needs rendered text (e.g. a Korean-language infographic label, a number), include that exact text directly in the prompt as text to render — both Codex `imagegen` and `mcp-image` render embedded text (Korean included) accurately, so the default path doesn't need the separate HTML/SVG-compositing workaround the legacy ComfyUI path still requires.
+- **Negative prompt**: the Visual Identity section's "must avoid" list, merged with the baseline anatomy terms in `references/default-negative-prompts.md` (dedupe overlap; never drop the baseline even if Visual Identity defines its own list — that list is written by someone thinking about style and composition, not anatomy). Fold this into the prompt as an explicit "avoid: ..." clause, or into a dedicated negative-prompt parameter if the specific tool call exposes one.
+- **Dimensions**: default to a 1:1 square unless the constitution's Formatting Rules specify a different aspect ratio for in-body images. Pass it as a size/aspect-ratio parameter if the tool call accepts one, otherwise state the desired aspect ratio in the prompt.
+
+### Backend routing
+
+Try each of the following in order, falling through only when the previous one is unavailable in this environment:
+
+1. **Default — Codex `imagegen`.** If this session is running under Codex CLI with an `imagegen`-family tool available (naming may vary slightly), use it directly with the prompt built above — no environment setup, MCP registration, or workflow file needed. This is a single call, regardless of whether the image needs rendered text.
+2. **Alternative — `mcp-image` MCP.** If Codex `imagegen` isn't available (not a Codex CLI session, or the tool isn't present), check whether the `mcp-image` MCP server is already connected in this environment (tool name may vary, e.g. `generate_image`). If connected, call it with the prompt; the server selects among whichever of the `gemini`/`openai`/`seedream` providers it has configured and automatically falls back to another connected provider if the preferred one isn't set up (e.g. no `gemini` API key) — this skill never needs to pick or configure a specific provider itself. If `mcp-image` isn't connected, this skill does not attempt to register it live (unlike the legacy ComfyUI flow below); treat it as unavailable and fall through to step 3.
+3. **Legacy/optional — ComfyUI.** Reach for this only when the project explicitly still requires a ComfyUI backend (documented in the project's `CONSTITUTION.md`, or an explicit instruction from the user) — never as a default fallback just because steps 1-2 were unavailable. See [Legacy: ComfyUI (optional)](#legacy-comfyui-optional) below for the full setup and generation procedure.
+4. **None reachable.** Follow the "do not block the pipeline" fallback above.
+
+Whichever backend produced the image, save the raw result to `/tmp/gen.png` (or whatever extension the tool returns), then continue at [Finishing up](#finishing-up-both-types).
+
+### Legacy: ComfyUI (optional)
+
+The following procedure is **legacy** — reach for it only when a project explicitly still requires ComfyUI (step 3 of [Backend routing](#backend-routing) above), not as a general-purpose alternative to Codex `imagegen`/`mcp-image`. It predates that routing and is kept only for consuming projects that haven't migrated off it.
+
+#### Workflow files
 
 Generation is driven by ComfyUI workflow graphs exported in **API format** (ComfyUI menu → *Save (API Format)*, not a regular workflow save), stored under `workflows/`:
 
@@ -35,7 +58,7 @@ Both files use **placeholder substitution**, not node-title lookup: the positive
 
 `workflows/_template.json` is a minimal starting graph (checkpoint loader → positive/negative CLIP text encode → empty latent → sampler → VAE decode → save image) using the same placeholder convention, to duplicate when authoring `photographic.json` or a new use case. Everything else in a workflow file (sampler, scheduler, steps, cfg, LoRAs, ControlNet, custom nodes) is whatever the workflow author tuned it to — this skill never touches those fields at runtime; tune them by editing the workflow file directly and committing the change once it's validated.
 
-### Steps
+#### Steps
 
 1. **Set up the connection.** Check whether a ComfyUI-flavored MCP server (tool names like `enqueue_workflow` / `get_history` / a result-fetching tool — naming varies slightly by which server is installed) is already connected in this environment. If yes, skip to step 2 — it's already configured.
    - If not connected, first get `COMFYUI_URL` — don't guess an address:
@@ -58,12 +81,11 @@ Both files use **placeholder substitution**, not node-title lookup: the positive
      ```
      `.mcp.json` itself is safe to commit — it holds no machine-specific value, only a reference to the `COMFYUI_URL` environment variable that `.claude/settings.local.json` supplies per-machine. **Tell the user a session restart is required** for a newly-registered MCP server to actually connect — this skill cannot make it available mid-session.
    - If the MCP server still isn't reachable after setup (registration didn't take, npx/Node unavailable, etc.), fall back to raw HTTP calls against `$COMFYUI_URL` for the rest of this skill (see step 4) rather than blocking on MCP specifically.
-2. For each Generated-type concept approved in `asset-metadata`, first classify its **use case** — general illustration, photographic/mood feature image, or Korean-text infographic (see routing table in step 3) — then build:
-   - **Prompt** (→ `{{SCENE_PROMPT}}`): the section's illustration concept as approved in `asset-metadata`, refined against the section's actual drafted text (now available, since this step runs after `draft-write`) rather than the outline alone, combined with the Visual Identity section's palette/mood (the workflow file's positive-prompt node already carries the fixed style tags — e.g. "flat style vector illustration" — so this only needs to add the scene-specific and palette/mood detail, not restate the style). Default to `plain solid background, no pattern` unless the concept specifically calls for a detailed scene — abstract/conceptual words in a prompt (e.g. "streak", "series", "network") can get misread by the model as a diagram or circuit-board motif instead of the intended persona scene. For a Korean-text infographic, this covers only the background/illustration layer — never ask the model to render the Korean text or numbers themselves (see step 3).
-   - **Negative prompt** (→ `{{NEGATIVE_EXTRA}}`): the Visual Identity section's "must avoid" list, minus anything already covered by the workflow file's baked-in baseline (`references/default-negative-prompts.md`'s anatomy terms — don't repeat those here, the placeholder is additive). If nothing in "must avoid" goes beyond the baseline, this can be an empty string.
-   - **Dimensions**: default to a 1:1 square unless the constitution's Formatting Rules specify a different aspect ratio for in-body images.
+2. For each Generated-type concept, first classify its **use case** — general illustration, photographic/mood feature image, or Korean-text infographic (see routing table in step 3) — then adapt the prompt/negative-prompt/dimensions from [Building the prompt](#building-the-prompt) above into this workflow file's placeholders:
+   - **`{{SCENE_PROMPT}}`**: the Prompt text from [Building the prompt](#building-the-prompt), with one ComfyUI-specific carve-out — for a Korean-text infographic, include only the background/illustration portion here. ComfyUI/SDXL still cannot render Korean glyphs reliably (unlike the default Codex `imagegen`/`mcp-image` path), so never ask this backend to render the Korean text or numbers themselves; composite that text afterward via HTML/SVG, outside this generation call. Also note the workflow file's positive-prompt node already carries fixed style tags (e.g. "flat style vector illustration"), so this only needs the scene-specific and palette/mood detail, not a restated style.
+   - **`{{NEGATIVE_EXTRA}}`**: the Negative prompt text from [Building the prompt](#building-the-prompt), minus anything already covered by the workflow file's baked-in baseline (`references/default-negative-prompts.md`'s anatomy terms — don't repeat those here, the placeholder is additive). If nothing goes beyond the baseline, this can be an empty string.
+   - **Dimensions**: as built above.
 3. **Select the workflow file for this image's use case.** Pick `workflows/illustration.json` for general illustration and Korean-infographic backgrounds, or `workflows/photographic.json` for photographic/mood images (prompt-only handoff if that file doesn't exist yet). The checkpoint and LoRA are already baked into the file as a validated pairing — don't second-guess or swap them per-request. `references/recommended-models.md` is background reading for when *authoring or updating* a workflow file, not something this skill queries live on every run.
-   - **Korean-text infographics:** route to `workflows/illustration.json` for the background/illustration layer only. Never rely on the diffusion model for the Korean text/numbers themselves — composite that text afterward via HTML/SVG, outside this skill's generation call.
    - If the backend reports the checkpoint/LoRA named in the file isn't installed, or repeated OOM errors suggest a VRAM mismatch, don't silently substitute a different model — report it and fall back to a prompt-only handoff for that image (same as the failure handling in [Finishing up](#finishing-up-both-types)).
 4. Fill in the selected workflow (placeholder substitution, per the Workflow files section above) and submit it — **prefer the `comfyui` MCP tools when connected**, falling back to raw HTTP only if they're not:
    - **Via MCP** (e.g. `enqueue_workflow` → `get_history` → the image-fetching tool the connected server exposes, commonly `view_image`/`get_image`): pass the filled JSON to `enqueue_workflow` to get a `prompt_id`, poll `get_history` for that ID, then fetch the resulting image through the server's result tool. `get_history` on this kind of server typically surfaces full Python tracebacks on failure — read them; they're more useful for diagnosing a bad checkpoint/LoRA path or an OOM than a bare non-2xx HTTP status would be.

@@ -62,6 +62,9 @@ This is what makes the plugin portable across unrelated products: the same plugi
 
 <!-- add one more ### section per additional platform (BetaList, WIP, Peerlist, ...) as they're adopted -->
 
+## Common Checklist (optional)
+<!-- Cross-platform review items that apply regardless of platform, e.g. "AI 흔적 제거" (no more than 0-1 em dashes, no AI-cliché phrasing, ...). `post` checks drafts against this after writing them if it's present; omit this section entirely if there's nothing project-specific to add here. -->
+
 ## Recurring Links & Handles
 - Website: <...>
 - X/Twitter: <...>

@@ -1,6 +1,6 @@
 # blog-content-pipeline
 
-A Claude Code plugin that turns a seed topic into a publish-ready blog post through a constitution-driven, approval-gated pipeline: trend research → SERP gap analysis → idea refinement → fact enrichment → outline → asset/metadata planning → draft writing → image generation → thumbnail copy → SEO/brand vetting → optional knowledge-base capture.
+A Claude Code plugin that turns a seed topic into a publish-ready blog post through a constitution-driven, approval-gated pipeline: (optional) topic scouting → trend research → SERP gap analysis → idea refinement → fact enrichment → outline → asset/metadata planning → draft writing → image generation → thumbnail copy → SEO/brand vetting → optional knowledge-base capture.
 
 It's designed to be dropped into *any* blog repo, not just one specific blog. None of the skills hardcode a brand voice, taxonomy, or formatting rules — they all read a `CONSTITUTION.md` file at the target project's root. Write a different constitution, get a differently-voiced blog out of the same pipeline.
 
@@ -18,8 +18,9 @@ Since this is a private repository, Claude Code needs GitHub access to fetch it 
 ## Usage
 
 1. In the target blog repo, run the `constitution` skill first if `CONSTITUTION.md` doesn't exist yet. Answer its interview honestly — every other skill depends on it.
-2. Run `write-post` (or invoke it implicitly by asking to write a post) to drive the full 10-step pipeline. It pauses at 7 approval gates: after idea refinement, after the outline, after asset/metadata, after the draft, after image generation, after thumbnail copy, and at final SEO vetting.
-3. Each individual step is also its own skill (`trend-retrieve`, `serp-analyze`, `idea-refine`, `fact-enrich`, `outline`, `asset-metadata`, `draft-write`, `image-generate`, `thumbnail-copy`, `seo-vet`, `knowledge-capture`) if you want to re-run or resume a single stage instead of the whole pipeline.
+2. If you don't have a seed topic yet (e.g. an unattended/scheduled run with nobody handing one over), run `topic-scout` first — it scans the knowledge base and the web for candidates and pauses for you to pick one before anything downstream spends research effort. Skip it if you already have a topic.
+3. Run `write-post` (or invoke it implicitly by asking to write a post) to drive the full 10-step pipeline. It pauses at 7 approval gates: after idea refinement, after the outline, after asset/metadata, after the draft, after image generation, after thumbnail copy, and at final SEO vetting.
+4. Each individual step is also its own skill (`topic-scout`, `trend-retrieve`, `serp-analyze`, `idea-refine`, `fact-enrich`, `outline`, `asset-metadata`, `draft-write`, `image-generate`, `thumbnail-copy`, `seo-vet`, `knowledge-capture`) if you want to re-run or resume a single stage instead of the whole pipeline.
 
 ## Skills
 
@@ -27,6 +28,7 @@ Since this is a private repository, Claude Code needs GitHub access to fetch it 
 |---|---|
 | `constitution` | Sets up/updates `CONSTITUTION.md` — brand, audience, voice, taxonomy, formatting rules, growth mechanics, knowledge base |
 | `write-post` | Master orchestrator — runs the full pipeline in order |
+| `topic-scout` | Step 0 (optional) — when there's no seed topic yet, scan knowledge/ + the web for candidates and get a topic-pick approval before `trend-retrieve` |
 | `trend-retrieve` | Step 1 — research real audience pain points around a seed topic |
 | `serp-analyze` | Step 2 — find the content gap versus what's already ranking |
 | `idea-refine` | Step 3 — concrete post plan + **1st approval gate** |

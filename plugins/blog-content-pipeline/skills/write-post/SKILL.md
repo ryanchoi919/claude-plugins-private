@@ -1,6 +1,6 @@
 ---
 name: write-post
-description: Master entry point for writing a new blog post — runs the full 10-step pipeline (trend research through SEO vetting) in order, pausing at approval gates. Use when the user asks to write/plan a new post and hasn't specified a single narrower step.
+description: Master entry point for writing a new blog post — runs the full 10-step pipeline (trend research through SEO vetting) in order, pausing at approval gates, optionally preceded by `topic-scout` when no seed topic exists yet. Use when the user asks to write/plan a new post and hasn't specified a single narrower step.
 ---
 
 # Write Post — Pipeline Control Tower
@@ -11,12 +11,19 @@ This is the entry point for producing one new post from a seed topic through to 
 
 Before anything else, confirm `CONSTITUTION.md` exists at the project root. If it doesn't, stop and run the `constitution` skill first — every step below depends on it for voice, taxonomy, and formatting rules. Do not improvise brand/voice decisions yourself; they belong in the constitution, not in this pipeline.
 
+## Step 0 (optional) — no seed topic yet?
+
+If the user (or the scheduled run invoking this pipeline) hasn't given a seed topic, run `topic-scout` first. It scans the knowledge base and the web for candidates, dedupes against existing posts, and stops at its own approval gate for the human to pick one — this is what lets an unattended/scheduled run still find something worth writing about without skipping human sign-off on *what* gets written. Once a topic is picked (there or by the user directly), continue at step 1 below with that topic as the seed.
+
+If a seed topic is already in hand, skip `topic-scout` entirely and start at step 1.
+
 ## Pipeline order
 
 Run these in sequence. Steps 1-2 and 4 chain automatically with no approval needed in between. Steps 3, 5, 6, 7, 8, 9, 10 each end in an explicit approval gate — do not proceed past a gate until the user has approved that step's output.
 
 | # | Skill | Gate after? |
 |---|-------|-------------|
+| 0 | `topic-scout` (optional — only when no seed topic yet) | **yes — topic pick, before research spend begins** |
 | 1 | `trend-retrieve` | no |
 | 2 | `serp-analyze` | no |
 | 3 | `idea-refine` | **yes — 1st approval** |

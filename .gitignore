@@ -1,1 +1,2 @@
 plugins/careerfit/tests/.personal-denylist
+__pycache__/

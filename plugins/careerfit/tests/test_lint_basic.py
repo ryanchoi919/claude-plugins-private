@@ -51,3 +51,8 @@ def test_markdown_frontmatter_stripped(tmp_path):
     t = L.visible_text(p)
     assert "modified" not in t and "본문" in t
     assert rules(L.find_banned(t, "md")) == ["EM_DASH"]
+
+
+def test_target_company_short_name_not_flagged():
+    fs = L.find_other_companies("CJ올리브영 AX 전략 지원", "CJ올리브영", ["올리브영", "씨제이올리브영"], "r.html")
+    assert fs == []

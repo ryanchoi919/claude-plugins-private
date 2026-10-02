@@ -3,14 +3,18 @@ import sys as _sys, pathlib as _pl
 _sys.path.insert(0, str(_pl.Path(__file__).resolve().parent.parent))
 
 import html as _html
+import json
+import os
 import re
+import sys
+import urllib.request
 from dataclasses import dataclass, field
 from datetime import date
 from pathlib import Path
 
 from pypdf import PdfReader
 
-from scripts.config import normalize_company
+from scripts.config import load_career, normalize_company, read_frontmatter
 
 COMMENT = re.compile(r"<!--(.*?)-->", re.S)
 BLOCKS = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.S | re.I)
@@ -73,7 +77,7 @@ def find_other_companies(text: str, company: str, known: list, doc) -> list:
     out = []
     for k in known:
         name = normalize_company(k)
-        if not name or name == target:
+        if not name or name in target or target in name:
             continue
         i = flat.find(name)
         if i != -1:
@@ -186,3 +190,111 @@ def check_total_years(text: str, start: date, ref: date, doc) -> list:
         if abs(n - years) <= 2 and n not in (years, years + 1):
             out.append(_finding("CAREER_YEARS", "필수", doc, m.group(0), f"경력 연수는 만 {years}년(또는 {years + 1}년째)"))
     return out
+
+
+def _flat(text: str) -> str:
+    return re.sub(r"\s+", "", text)
+
+
+def check_version(html_path, pdf_path) -> list:
+    h = _flat(visible_text(html_path))
+    p = _flat(visible_text(pdf_path))
+    chunks = [h[i:i + 12] for i in range(0, max(len(h) - 12, 0), 12)]
+    out = []
+    if chunks:
+        ratio = sum(1 for c in chunks if c in p) / len(chunks)
+        if ratio < 0.9:
+            out.append(_finding("VERSION_MISMATCH", "필수", pdf_path, f"일치율 {ratio:.2f}",
+                                "PDF가 HTML 최신본과 다름: PDF를 다시 렌더링"))
+    if os.path.getmtime(pdf_path) < os.path.getmtime(html_path):
+        out.append(_finding("PDF_OLDER_THAN_HTML", "권장", pdf_path, "", "PDF가 HTML보다 오래됨"))
+    return out
+
+
+URL = re.compile(r"https?://[^\s<>\"')]+")
+
+
+def _head(url: str) -> int:
+    try:
+        req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": "careerfit-lint"})
+        with urllib.request.urlopen(req, timeout=8) as r:
+            return r.status
+    except Exception:
+        return 0
+
+
+def check_links(text: str, doc, fetch=None) -> list:
+    out = []
+    for url in sorted(set(URL.findall(text))):
+        if "claude.ai/artifact" in url:
+            out.append(_finding("ARTIFACT_LINK", "권장", doc, url,
+                                "아티팩트는 기본 비공개: 채용 담당자에게 공유 권한이 있는지 확인"))
+            continue
+        if fetch is None:
+            continue
+        code = fetch(url)
+        if code == 0 or code >= 400:
+            out.append(_finding("LINK_BROKEN", "필수", doc, url, f"링크 응답 {code or '없음'}"))
+    return out
+
+
+def known_companies(applications_dir) -> list:
+    out = []
+    for d in sorted(Path(applications_dir).glob("*/")):
+        f = d / "공고.md"
+        if f.is_file():
+            try:
+                fm, _ = read_frontmatter(f)
+                if fm.get("회사"):
+                    out.append(str(fm["회사"]))
+            except ValueError:
+                pass
+        out.append(d.name.split()[0])
+    return out
+
+
+def lint(career_md, company, docs, claims_md=None, pairs=(), ref=None, fetch=None) -> list:
+    career = load_career(career_md)
+    ref = ref or date.today()
+    claims = parse_claims(Path(claims_md).read_text(encoding="utf-8")) if claims_md else []
+    apps = career.paths["applications"]
+    known = known_companies(apps) if apps.is_dir() else []
+    out = []
+    for d in docs:
+        d = Path(d)
+        t = visible_text(d)
+        out += find_banned(t, d.name)
+        out += find_other_companies(t, company, known, d.name)
+        out += check_periods(t, d.name)
+        if career.career_start:
+            out += check_total_years(t, career.career_start, ref, d.name)
+        if claims:
+            out += check_claims(t, claims, d.name)
+        out += check_links(t, d.name, fetch)
+        if d.suffix == ".html":
+            out += check_title(d, d.stem)
+            out += check_hidden(d)
+    for h, p in pairs:
+        out += check_version(h, p)
+    return out
+
+
+def main(argv=None) -> int:
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--career", required=True)
+    ap.add_argument("--company", required=True)
+    ap.add_argument("--claims")
+    ap.add_argument("--pair", action="append", default=[])
+    ap.add_argument("--offline", action="store_true")
+    ap.add_argument("docs", nargs="+")
+    a = ap.parse_args(argv)
+    pairs = [tuple(Path(x) for x in p.split(":", 1)) for p in a.pair]
+    fs = lint(a.career, a.company, [Path(d) for d in a.docs], a.claims, pairs, fetch=None if a.offline else _head)
+    print(json.dumps(fs, ensure_ascii=False, indent=2))
+    return 1 if any(f["severity"] == "필수" for f in fs) else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

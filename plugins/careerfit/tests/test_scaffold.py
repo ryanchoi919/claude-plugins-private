@@ -21,3 +21,20 @@ def test_marketplace_entry():
 
 def test_root_readme_row():
     assert "[`careerfit`](plugins/careerfit)" in (REPO_ROOT / "README.md").read_text(encoding="utf-8")
+
+
+def test_evals_format():
+    data = json.loads((PLUGIN_ROOT / "evals" / "evals.json").read_text(encoding="utf-8"))
+    assert data["skill_name"] == "careerfit"
+    assert [e["id"] for e in data["evals"]] == [1, 2, 3, 4]
+    for e in data["evals"]:
+        assert e["prompt"] and e["expected_output"]
+        for f in e["files"]:
+            assert (PLUGIN_ROOT / f).exists(), f
+
+
+def test_plugin_readme_sections():
+    s = (PLUGIN_ROOT / "README.md").read_text(encoding="utf-8")
+    for w in ("/careerfit:setup", "/careerfit:apply", "/careerfit:track", "/careerfit:helper",
+              "CAREERFIT_CHROME", "uv run --with pytest", "## 실사용 검증"):
+        assert w in s, w

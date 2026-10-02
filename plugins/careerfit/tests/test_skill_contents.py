@@ -12,6 +12,8 @@ REQUIRED = {
     "apply": ["references/jd-capture.md", "scripts/status.py", "준비 중", "brief", "review", "## 저장 후 처리", "setup"],
     "setup": ["## 처음 실행", "## 업데이트", "references/schemas.md", "영역", "임팩트", "기본본 모드", "status.py scan",
               "지우지 말고", "본인 확인"],
+    "track": ["status.py set", "status.py scan", "준비 중", "지원 취소", "insights.md", "가설", "# 결과 ("],
+    "helper": ["setup", "apply", "track", "status.py scan", "[확인 필요]", "1~3개"],
 }
 
 

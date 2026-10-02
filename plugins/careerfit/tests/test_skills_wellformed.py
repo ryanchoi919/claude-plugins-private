@@ -33,4 +33,4 @@ def test_review_and_agent_exist():
 
 def test_skill_set_complete_when_done():
     names = {p.parent.name for p in SKILLS}
-    assert names <= EXPECTED
+    assert names == EXPECTED

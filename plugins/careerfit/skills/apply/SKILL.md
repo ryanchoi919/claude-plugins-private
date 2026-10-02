@@ -7,7 +7,7 @@ description: careerfit 공고 단위 지원 진입점. 채용 공고(링크·텍
 
 ## 0. 선행 확인
 - 작업 폴더의 `CAREER.md`를 `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/config.py <CAREER.md>`로 읽는다. 없으면 setup 스킬로 안내하고 멈춘다
-- `<base>/`에 기본본 3종이 있는지, 이력 저장소보다 오래되지 않았는지 확인한다 (가장 최근 프로젝트 노트 `modified`와 기본본 파일 수정 시각 비교). 오래됐으면 setup 업데이트를 먼저 권한다
+- `<base>/`에 기본본 3종이 있는지, 이력 저장소보다 오래되지 않았는지 확인한다 (가장 최근 프로젝트 노트 `modified`와 기본본 파일 수정 시각 비교). 오래됐으면 update를 먼저 권한다
 - `<applications>/`에 같은 회사·직무 폴더가 있으면 새로 만들지 않고 이어서 진행한다
 
 ## 1. JD 캡처

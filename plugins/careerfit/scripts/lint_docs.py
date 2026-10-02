@@ -4,6 +4,8 @@ _sys.path.insert(0, str(_pl.Path(__file__).resolve().parent.parent))
 
 import html as _html
 import re
+from dataclasses import dataclass, field
+from datetime import date
 from pathlib import Path
 
 from pypdf import PdfReader
@@ -92,3 +94,95 @@ def check_title(html_path, expected_stem: str) -> list:
 def check_hidden(path) -> list:
     return [_finding("HIDDEN_COMMENT", "권장", path, c[:40], "HTML 주석이 남아 있음: 공유·발행 시 노출될 수 있음")
             for c in hidden_text(path)]
+
+
+@dataclass
+class Claim:
+    id: str
+    text: str
+    value: str
+    source: str
+    attribution: str
+    forbidden: list = field(default_factory=list)
+
+
+QUOTED = re.compile(r"[\"“]([^\"”]+)[\"”]")
+
+
+def parse_claims(md_text: str) -> list:
+    out = []
+    for line in md_text.splitlines():
+        if not re.match(r"^\|\s*C\d+\s*\|", line):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        cells += [""] * (6 - len(cells))
+        forbidden = []
+        for seg in cells[5].split(";"):
+            forbidden += QUOTED.findall(seg.split("→", 1)[0])
+        out.append(Claim(cells[0], cells[1], cells[2], cells[3], cells[4], forbidden))
+    return out
+
+
+UNITS = r"%p|%|부|권|개월|개|명|년|주|일|원|억|만|회|종|건|곳|쪽|배"
+NUM = re.compile(r"(?<![\d.,])(\d{1,3}(?:,\d{3})+|\d+(?:\.\d+)?)\s*(" + UNITS + r")")
+
+
+def numbers_in(text: str) -> set:
+    return {(v.replace(",", ""), u) for v, u in NUM.findall(text)}
+
+
+def check_claims(text: str, claims: list, doc) -> list:
+    out = []
+    for c in claims:
+        for phrase in c.forbidden:
+            i = text.find(phrase)
+            if i != -1:
+                out.append(_finding("FORBIDDEN_EXPRESSION", "필수", doc, _excerpt(text, i, i + len(phrase)),
+                                    f"{c.id}의 금지 표현 '{phrase}'"))
+    allowed = set()
+    for c in claims:
+        allowed |= numbers_in(c.text) | numbers_in(c.value)
+    for v, u in sorted(numbers_in(text) - allowed):
+        out.append(_finding("NUMBER_NOT_IN_CLAIMS", "권장", doc, f"{v}{u}",
+                            f"주장 원장에 없는 숫자 '{v}{u}': 원장에 추가하고 출처를 확인"))
+    return out
+
+
+PERIOD = re.compile(
+    r"(약\s*)?(\d+)\s*(개월|주|일)간?\s*\(\s*(\d{4})\.(\d{1,2})\.(\d{1,2})\s*[–\-~]\s*(?:(\d{4})\.)?(\d{1,2})\.(\d{1,2})\s*\)")
+
+
+def check_periods(text: str, doc) -> list:
+    out = []
+    for m in PERIOD.finditer(text):
+        approx, n, unit = bool(m.group(1)), int(m.group(2)), m.group(3)
+        y1, mo1, d1 = int(m.group(4)), int(m.group(5)), int(m.group(6))
+        y2 = int(m.group(7)) if m.group(7) else y1
+        days = (date(y2, int(m.group(8)), int(m.group(9))) - date(y1, mo1, d1)).days
+        if unit == "개월":
+            actual, tol = days / 30.44, (0.75 if approx else 0.5)
+        elif unit == "주":
+            actual, tol = days / 7, (1.5 if approx else 1.0)
+        else:
+            actual, tol = days, 1
+        if abs(actual - n) > tol:
+            out.append(_finding("PERIOD_MISMATCH", "필수", doc, m.group(0),
+                                f"'{n}{unit}'이지만 실제 기간은 {days}일(약 {actual:.1f}{unit})"))
+    return out
+
+
+def _full_years(start: date, ref: date) -> int:
+    return ref.year - start.year - ((ref.month, ref.day) < (start.month, start.day))
+
+
+def check_total_years(text: str, start: date, ref: date, doc) -> list:
+    years = _full_years(start, ref)
+    out = []
+    for m in re.finditer(r"총\s*(\d+)\s*년(?!\s*\d+\s*개월)", text):
+        if int(m.group(1)) != years:
+            out.append(_finding("CAREER_YEARS", "필수", doc, m.group(0), f"총 경력은 만 {years}년"))
+    for m in re.finditer(r"(\d+)\s*년(째|간)", text):
+        n = int(m.group(1))
+        if abs(n - years) <= 2 and n not in (years, years + 1):
+            out.append(_finding("CAREER_YEARS", "필수", doc, m.group(0), f"경력 연수는 만 {years}년(또는 {years + 1}년째)"))
+    return out

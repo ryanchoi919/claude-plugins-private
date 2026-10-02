@@ -37,7 +37,10 @@ def read_frontmatter(path: Path) -> tuple[dict, str]:
     if not text.startswith("---\n"):
         raise ValueError(f"{path}: frontmatter(--- 블록)가 없습니다")
     end = text.index("\n---", 4)
-    data = yaml.safe_load(text[4:end]) or {}
+    try:
+        data = yaml.safe_load(text[4:end]) or {}
+    except yaml.YAMLError as e:
+        raise ValueError(f"{path}: frontmatter YAML 오류: {e}") from e
     return data, text[end + 4:].lstrip("\n")
 
 

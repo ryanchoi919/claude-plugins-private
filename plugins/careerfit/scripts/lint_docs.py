@@ -23,7 +23,10 @@ TAG = re.compile(r"<[^>]+>")
 BANNED = [
     ("EM_DASH", "필수", re.compile(r"—"), "em dash 사용 금지"),
     ("FIRST_PERSON", "필수", re.compile(r"(?<![가-힣])(저는|제가)"), "'저는/제가' 사용 금지"),
-    ("EMOJI", "필수", re.compile("[\U0001F300-\U0001FAFF☀-➿]"), "이모지 사용 금지"),
+    ("EMOJI", "필수", re.compile("[\U0001F000-\U0001FAFF]"), "이모지 사용 금지"),
+    ("PLACEHOLDER", "필수", re.compile(r"\[확인 필요[^\]]*\]|\{\{[A-Z_]+\}\}|\[(?:회사|기간|직무|이름|프로젝트|결과|문제|행동|설명|도구|분류|요약"
+                                       r"|클로징|케이스|한 줄|핵심|학교|시험|소속|직급|업종|역할|링크|연도|점수|전공|분야|작업)[^\]]*\]"),
+     "자리표시자가 남아 있음: 제출본에는 0개여야 함"),
     ("HYPE_CANDIDATE", "권장", re.compile(r"최초|유일|전담|전국|완벽|혁신적"), "과장 수식어 후보: 출처 노트와 대조 필요"),
 ]
 
@@ -39,7 +42,9 @@ def _finding(rule, severity, doc, excerpt, message):
 def visible_text(path) -> str:
     p = Path(path)
     if p.suffix == ".pdf":
-        return "\n".join(pg.extract_text() or "" for pg in PdfReader(str(p)).pages)
+        text = "\n".join(pg.extract_text() or "" for pg in PdfReader(str(p)).pages)
+        # 헤드리스 Chrome + 나눔 폰트 PDF는 공백을 U+0001, en dash를 U+00AD로 추출한다
+        return text.replace("\x01", " ").replace("\xad", "–")
     s = p.read_text(encoding="utf-8")
     if p.suffix == ".md":
         if s.startswith("---\n"):
@@ -73,15 +78,21 @@ def find_banned(text: str, doc) -> list:
 
 def find_other_companies(text: str, company: str, known: list, doc) -> list:
     target = normalize_company(company)
-    flat = normalize_company(text)
+    stripped = re.sub(r"\(주\)|㈜|주식회사", "", text)
+    flat = re.sub(r"\s+", "", stripped)
     out = []
     for k in known:
         name = normalize_company(k)
         if not name or name in target or target in name:
             continue
-        i = flat.find(name)
-        if i != -1:
-            out.append(_finding("OTHER_COMPANY", "필수", doc, flat[max(0, i - 15):i + len(name) + 15],
+        # 긴 이름만 띄어쓰기 변형("가상 컴퍼니")까지 찾는다. 짧은 이름은 "다른 회사와" 같은 오탐이 난다
+        hay = flat if len(name) >= 5 else stripped
+        rx = (re.compile(r"(?<![A-Za-z0-9])" + re.escape(name) + r"(?![A-Za-z0-9])") if name.isascii()
+              else re.compile(re.escape(name)))
+        m = rx.search(hay)
+        if m:
+            severity = "권장" if len(name) <= 2 else "필수"
+            out.append(_finding("OTHER_COMPANY", severity, doc, hay[max(0, m.start() - 15):m.end() + 15],
                                 f"다른 회사명 '{name}'이 남아 있음"))
     return out
 
@@ -162,7 +173,11 @@ def check_periods(text: str, doc) -> list:
         approx, n, unit = bool(m.group(1)), int(m.group(2)), m.group(3)
         y1, mo1, d1 = int(m.group(4)), int(m.group(5)), int(m.group(6))
         y2 = int(m.group(7)) if m.group(7) else y1
-        days = (date(y2, int(m.group(8)), int(m.group(9))) - date(y1, mo1, d1)).days
+        try:
+            days = (date(y2, int(m.group(8)), int(m.group(9))) - date(y1, mo1, d1)).days
+        except ValueError:
+            out.append(_finding("PERIOD_MISMATCH", "필수", doc, m.group(0), "존재하지 않는 날짜"))
+            continue
         if unit == "개월":
             actual, tol = days / 30.44, (0.75 if approx else 0.5)
         elif unit == "주":
@@ -179,21 +194,37 @@ def _full_years(start: date, ref: date) -> int:
     return ref.year - start.year - ((ref.month, ref.day) < (start.month, start.day))
 
 
+CAREER_CTX = re.compile(r"경력|실무|업계|커리어|산업|직장|근무|일해|몸담")
+
+
+def _career_context(text: str, m) -> bool:
+    return bool(CAREER_CTX.search(text[max(0, m.start() - 12):m.end() + 12]))
+
+
 def check_total_years(text: str, start: date, ref: date, doc) -> list:
+    """경력 문맥(경력·산업·업계 등)이 가까이 있으면 필수, 없으면 프로젝트 기간일 수 있어 권장."""
     years = _full_years(start, ref)
     out = []
     for m in re.finditer(r"총\s*(\d+)\s*년(?!\s*\d+\s*개월)", text):
         if int(m.group(1)) != years:
-            out.append(_finding("CAREER_YEARS", "필수", doc, m.group(0), f"총 경력은 만 {years}년"))
+            out.append(_finding("CAREER_YEARS", "필수" if _career_context(text, m) else "권장", doc, m.group(0),
+                                f"총 경력은 만 {years}년"))
     for m in re.finditer(r"(\d+)\s*년(째|간)", text):
         n = int(m.group(1))
-        if abs(n - years) <= 2 and n not in (years, years + 1):
-            out.append(_finding("CAREER_YEARS", "필수", doc, m.group(0), f"경력 연수는 만 {years}년(또는 {years + 1}년째)"))
+        if n in (years, years + 1):
+            continue
+        if _career_context(text, m):
+            sev = "필수"
+        elif abs(n - years) <= 2:
+            sev = "권장"
+        else:
+            continue
+        out.append(_finding("CAREER_YEARS", sev, doc, m.group(0), f"경력 연수는 만 {years}년(또는 {years + 1}년째)"))
     return out
 
 
 def _flat(text: str) -> str:
-    return re.sub(r"\s+", "", text)
+    return re.sub(r"[\s\x00-\x1f\xad()]+", "", text)
 
 
 def check_version(html_path, pdf_path) -> list:
@@ -247,6 +278,7 @@ def known_companies(applications_dir) -> list:
                 fm, _ = read_frontmatter(f)
                 if fm.get("회사"):
                     out.append(str(fm["회사"]))
+                    continue
             except ValueError:
                 pass
         out.append(d.name.split()[0])

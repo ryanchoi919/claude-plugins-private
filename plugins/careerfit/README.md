@@ -31,7 +31,7 @@
 
 ## 의존성
 
-- 헤드리스 Chromium: `npx playwright install chromium` (Playwright 캐시에서 자동 탐색) 또는 환경변수 `CAREERFIT_CHROME`에 실행 파일 경로
+- 헤드리스 Chromium: `npx playwright install chromium` (Linux·macOS Playwright 캐시, PATH의 chromium·google-chrome, macOS `/Applications` 순으로 자동 탐색) 또는 환경변수 `CAREERFIT_CHROME`에 실행 파일 경로
 - Python 3 + `pypdf`, `PyYAML`
 - 나눔 폰트 (NanumGothic·NanumMyeongjo) 로컬 설치. `fc-list :lang=ko`로 확인. 웹폰트는 쓰지 않는다
 

@@ -1,0 +1,29 @@
+{
+  "skill_name": "careerfit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "tests/fixtures/persona 폴더를 내 커리어 폴더로 쓰고 있어. CAREER.md는 있으니 기본 이력서·경력기술서·포트폴리오를 만들어줘.",
+      "expected_output": "setup 업데이트 흐름. 핵심 프로젝트 2개(재고 예측 대시보드, 고객 문의 자동 분류 에이전트)를 전면에, 채널 수익성 분석은 보조로. 기본본 3종 파일명이 김하늘_이력서/김하늘_경력기술서/김하늘_포트폴리오. 재고 예측 도입 제안은 팀장으로 귀속. review 기본본 모드 실행. 노트에 없는 수치 없음",
+      "files": ["tests/fixtures/persona"]
+    },
+    {
+      "id": 2,
+      "prompt": "이 공고 지원 준비해줘. tests/fixtures/jd-sample-commerce.txt (내 커리어 폴더는 tests/fixtures/persona)",
+      "expected_output": "apply → brief. 브리프.md에 7개 절(포지션 해석·적합도 매트릭스·이야기 설계·약점과 대응 논리·빈틈 질문·인사이트 반영·서류 계획), 매트릭스에서 '이커머스 산업 경험'은 갭, 빈틈 질문에 재고 예측 이전 품절 건수 같은 기준선 질문 포함, claims.md에 출처 있는 행만, 서류 계획은 경력기술서 심층형(프로젝트 2개), 승인 전에는 서류를 쓰지 않음",
+      "files": ["tests/fixtures/persona", "tests/fixtures/jd-sample-commerce.txt"]
+    },
+    {
+      "id": 3,
+      "prompt": "샘플커머스는 서류 전형, 나머지는 다 서류 탈락으로 기록해줘. (커리어 폴더 tests/fixtures/persona)",
+      "expected_output": "track. status.py scan으로 대상 목록을 보여주고 확인, 상태 값은 고정 8개 중에서, 지원 폴더가 없으면 없다고 알리고 만들지 않음, 진행 상황.md가 있는 건만 결과 섹션 추가",
+      "files": ["tests/fixtures/persona"]
+    },
+    {
+      "id": 4,
+      "prompt": "뭐부터 해야 할지 모르겠어. (커리어 폴더 tests/fixtures/persona)",
+      "expected_output": "helper. CAREER.md 있음, 기본본 없음, 지원 건 없음을 읽고 1~3개 제안. 기본본이 없으니 setup(기본본 생성)을 첫 제안으로",
+      "files": ["tests/fixtures/persona"]
+    }
+  ]
+}

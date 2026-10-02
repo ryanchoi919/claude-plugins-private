@@ -2,17 +2,16 @@ import re
 
 import pytest
 
-from conftest import PLUGIN_ROOT
+from conftest import PLUGIN_ROOT, personal_words
 from scripts import build_variant
 
 T = PLUGIN_ROOT / "templates"
-PERSONAL = []
 
 
 @pytest.mark.parametrize("name", ["resume.html", "career-description.html", "portfolio.html"])
 def test_no_personal_data(name):
     s = (T / name).read_text(encoding="utf-8")
-    for w in PERSONAL:
+    for w in personal_words():
         assert w not in s, f"{name}에 개인정보 '{w}'"
     assert "fonts.googleapis" not in s
     assert "NanumGothic" in s

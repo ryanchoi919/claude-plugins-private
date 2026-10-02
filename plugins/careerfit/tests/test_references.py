@@ -1,6 +1,6 @@
 import pytest
 
-from conftest import PLUGIN_ROOT
+from conftest import PLUGIN_ROOT, personal_words
 
 R = PLUGIN_ROOT / "references"
 REQUIRED = {
@@ -24,5 +24,5 @@ def test_reference_contains(name, words):
 @pytest.mark.parametrize("name", REQUIRED)
 def test_reference_no_personal_data(name):
     s = (R / name).read_text(encoding="utf-8")
-    for w in ():
+    for w in personal_words():
         assert w not in s

@@ -16,7 +16,7 @@ def test_header_and_title():
     h = _render()
     assert "<title>김하늘_경력기술서_샘플커머스</title>" in h
     assert "<small>김하늘</small>" in h and "haneul@example.com" in h
-    assert "{{" not in h
+    assert "{{" not in h and "haneul@example.com" in h
 
 
 def test_project_numbering_and_fit_table():

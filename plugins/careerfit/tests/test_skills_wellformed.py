@@ -3,7 +3,7 @@ import re
 import pytest
 import yaml
 
-from conftest import PLUGIN_ROOT
+from conftest import PLUGIN_ROOT, personal_words
 
 SKILLS = sorted((PLUGIN_ROOT / "skills").glob("*/SKILL.md"))
 AGENTS = sorted((PLUGIN_ROOT / "agents").glob("*.md"))
@@ -24,6 +24,7 @@ def test_frontmatter_and_refs(p):
         assert meta["name"] == p.parent.name
     for ref in re.findall(r"\$\{CLAUDE_PLUGIN_ROOT\}/([\w./-]+)", text):
         assert (PLUGIN_ROOT / ref).exists(), f"{p}: 없는 경로 {ref}"
+    assert not [w for w in personal_words() if w in text]
 
 
 def test_review_and_agent_exist():

@@ -7,7 +7,7 @@ from conftest import PLUGIN_ROOT, personal_words
 
 SKILLS = sorted((PLUGIN_ROOT / "skills").glob("*/SKILL.md"))
 AGENTS = sorted((PLUGIN_ROOT / "agents").glob("*.md"))
-EXPECTED = {"review", "brief", "write-resume", "write-career-description", "write-portfolio", "apply", "setup", "track", "helper"}
+EXPECTED = {"review", "brief", "write-resume", "write-career-description", "write-portfolio", "apply", "setup", "update", "track", "helper"}
 
 
 def fm(p):

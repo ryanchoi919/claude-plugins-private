@@ -1,0 +1,279 @@
+<title>{{TITLE}}</title>
+<meta name="description" content="{{META}}">
+<!-- 로컬 설치 폰트(나눔명조/나눔고딕)만 사용: 헤드리스 Chrome 1회성 실행에서 Google Fonts 한글 웹폰트가 유니코드-레인지 서브셋 fetch 타이밍 문제로 간헐적으로 로드 실패해 시스템 폴백(NanumMyeongjo)이 섞이거나 엉뚱한 굵기가 임베드되는 문제가 있어 아예 제거함. -->
+<style>
+  @page{
+    size: A4;
+    margin: 14mm 12mm;
+  }
+  :root{
+    --ink:#1c2b39;
+    --accent:#3d6b7d;
+    --accent-strong:#2a4d5c;
+    --accent-soft:#e7eef0;
+    --paper:#f7f6f2;
+    --card:#ffffff;
+    --muted:#65707a;
+    --rule:#e3e1da;
+    --rule-strong:#c9d3d6;
+    --serif:"NanumMyeongjo","Noto Serif KR","Apple Myungjo","Batang",serif;
+    --sans:"NanumGothic","Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --ink:#eef2f4; --accent:#8fc1d1; --accent-strong:#a9d3e0; --accent-soft:#1f333a;
+      --paper:#12181c; --card:#182226; --muted:#9aa7ac; --rule:#2b3a40; --rule-strong:#3a4c53;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#eef2f4; --accent:#8fc1d1; --accent-strong:#a9d3e0; --accent-soft:#1f333a;
+    --paper:#12181c; --card:#182226; --muted:#9aa7ac; --rule:#2b3a40; --rule-strong:#3a4c53;
+    color-scheme: dark;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:15px; line-height:1.7; letter-spacing:-.01em;
+    word-break:keep-all; overflow-wrap:break-word;
+  }
+  .page{ max-width:800px; margin:0 auto; padding:48px 20px 90px; }
+  h1,h2,h3{ font-family:var(--serif); text-wrap:balance; margin:0; }
+  p{ margin:0; }
+  img{ max-width:100%; }
+
+  /* ---------- Header ---------- */
+  .head{
+    display:flex; gap:28px; align-items:center; justify-content:space-between;
+    padding-bottom:26px; border-bottom:3px solid var(--ink); margin-bottom:8px;
+  }
+  .head .id h1{ font-size:34px; font-weight:700; color:var(--ink); margin-bottom:8px; }
+  .head .tagline{ font-family:var(--serif); font-style:italic; font-size:16.5px; color:var(--accent-strong); margin-bottom:14px; }
+  .head .contact{ font-size:13.5px; color:var(--muted); display:flex; flex-wrap:wrap; gap:4px 14px; }
+  .head .photo{ flex:none; width:104px; height:134px; border-radius:2px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,.18); }
+  .head .photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+
+  /* ---------- Overview strip ---------- */
+  .overview{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:1px;
+    background:var(--rule); border:1px solid var(--rule); margin:22px 0 6px; border-radius:3px; overflow:hidden;
+  }
+  .overview .cell{ background:var(--card); padding:12px 14px; }
+  .overview .cell .k{ font-size:11px; color:var(--muted); letter-spacing:.04em; margin-bottom:5px; }
+  .overview .cell .v{ font-size:14.5px; font-weight:700; }
+
+  /* ---------- 대구분 : section title ---------- */
+  .section{ margin-top:40px; }
+  .section > h2{
+    font-size:21px; font-weight:700; color:var(--accent-strong);
+    padding-bottom:9px; border-bottom:3px solid var(--accent);
+    margin-bottom:16px; letter-spacing:-.01em;
+  }
+
+  /* skills */
+  .skill-row{ display:flex; flex-wrap:wrap; gap:7px; }
+  .skill-row .pill{
+    font-size:13px; padding:4px 11px; border:1px solid var(--rule-strong); border-radius:3px;
+    background:var(--card); color:var(--ink);
+  }
+  .skill-row.primary .pill{ background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong); font-weight:700; }
+
+  /* education */
+  .edu-row{ display:flex; gap:18px; padding:9px 0; border-bottom:1px dashed var(--rule); font-size:14.5px; }
+  .edu-row:last-child{ border-bottom:0; }
+  .edu-row .when{ flex:none; width:150px; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .edu-row .what b{ font-weight:700; }
+  .edu-row .what span{ color:var(--muted); }
+
+  /* ---------- 중구분(1) : company card ---------- */
+  .job{
+    background:var(--card); border-left:4px solid var(--accent); border-radius:0 4px 4px 0;
+    padding:16px 20px 20px; margin-bottom:26px; box-shadow:0 1px 2px rgba(0,0,0,.04);
+  }
+  .job .job-head{ display:flex; flex-wrap:wrap; align-items:baseline; gap:10px 14px; margin-bottom:4px; }
+  .job .job-head .company{ font-size:18px; font-weight:700; }
+  .job .job-head .role{ font-size:14.5px; color:var(--muted); }
+  .job .job-head .when{ margin-left:auto; font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .job .duty{ margin-top:10px; font-size:13px; }
+  .job .duty b{ color:var(--accent-strong); }
+
+  /* ---------- 중구분(2) : project ---------- */
+  .project{ margin-top:20px; padding-top:16px; border-top:1px dashed var(--rule); }
+  .project:first-of-type{ margin-top:16px; }
+  .project .p-title{ display:flex; gap:9px; align-items:baseline; font-weight:700; font-size:15.5px; }
+  .project .p-title .mark{ color:var(--accent); flex:none; }
+  .project .tagline{ font-family:var(--serif); font-style:italic; color:var(--muted); font-size:13.5px; margin:4px 0 10px 19px; }
+
+  /* ---------- 소구분 : field labels ---------- */
+  .field{ margin:8px 0 8px 19px; }
+  .field .tag{
+    display:inline-block; font-size:11px; font-weight:700; letter-spacing:.03em;
+    color:var(--accent-strong); background:var(--accent-soft); border-radius:2px;
+    padding:2px 7px; margin-bottom:5px;
+  }
+  .field .txt{ font-size:14px; }
+  .field ul{ margin:6px 0 0; padding-left:1.1em; }
+  .field li{ margin-bottom:5px; font-size:14px; }
+  .field li::marker{ color:var(--accent); }
+
+  /* ---------- self-intro ---------- */
+  .quote{
+    font-family:var(--serif); font-style:italic; font-size:16.5px; color:var(--accent-strong);
+    border-left:3px solid var(--accent); padding:2px 0 2px 16px; margin-bottom:22px;
+  }
+  .intro-item{ margin-bottom:26px; }
+  .intro-item .h{ display:flex; align-items:baseline; gap:9px; font-weight:700; font-size:16.5px; margin-bottom:8px; }
+  .intro-item .h .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); flex:none; }
+  .intro-item p{ font-size:14.5px; margin-left:16px; }
+  .intro-item p + p{ margin-top:10px; }
+
+  /* portfolio links */
+  .links{ display:flex; flex-wrap:wrap; gap:8px 10px; }
+  .links a{ font-size:13.5px; color:var(--accent-strong); text-decoration:none; border-bottom:1px solid var(--accent); }
+
+  /* def grid (preference / eligibility) */
+  .deflist{ display:grid; grid-template-columns:150px 1fr; row-gap:9px; column-gap:14px; font-size:14px; }
+  .deflist dt{ color:var(--muted); font-size:12.5px; letter-spacing:.02em; padding-top:2px; }
+  .deflist dd{ margin:0; }
+
+  .sign{ margin-top:52px; text-align:center; }
+  .sign .oath{ font-size:15.5px; margin-bottom:8px; }
+  .sign .who{ font-size:13.5px; color:var(--muted); }
+
+  @media (max-width:520px){
+    .head{ flex-direction:column-reverse; align-items:flex-start; }
+    .overview{ grid-template-columns:repeat(2,1fr); }
+    .deflist{ grid-template-columns:1fr; row-gap:2px; }
+    .deflist dd{ margin-bottom:8px; }
+  }
+
+  @media print{
+    :root{
+      --ink:#1c2b39; --accent:#3d6b7d; --accent-strong:#2a4d5c; --accent-soft:#e7eef0;
+      --paper:#ffffff; --card:#ffffff; --muted:#4a545c; --rule:#d8d6cf; --rule-strong:#c9d3d6;
+      color-scheme: light;
+    }
+    body{ background:#fff; font-size:12.5px; }
+    .page{ max-width:none; padding:0; }
+    * { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .project, .intro-item{ break-inside:avoid-page; }
+    .section > h2{ break-after:avoid-page; }
+    .job-head{ break-after:avoid-page; }
+    a{ color:var(--accent-strong) !important; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="head">
+    <div class="id">
+      <h1>{{NAME}}</h1>
+      <div class="tagline">{{TAGLINE}}</div>
+      <div class="contact">{{CONTACT}}</div>
+    </div>
+    <!-- PHOTO: <div class="photo"><img src="data:..."></div> 자리. CAREER.md의 photo가 있을 때만 생성 시 넣고, 사진이 든 파일은 커밋하지 않는다. -->
+  </header>
+
+  <div class="overview">
+    <div class="cell"><div class="k">학력</div><div class="v">[학교] ([학제])</div></div>
+    <div class="cell"><div class="k">경력</div><div class="v">[현 회사] 재직중</div></div>
+    <div class="cell"><div class="k">자격증 / 어학</div><div class="v">[시험] [점수]</div></div>
+    <div class="cell"><div class="k">총 경력</div><div class="v">[N]년</div></div>
+  </div>
+
+  <section class="section">
+    <h2>핵심역량 및 보유 기술</h2>
+    <!-- 공고 관련도 순으로 배치. 주력 도구는 primary 줄에 -->
+    <div class="skill-row primary" style="margin-bottom:8px">
+      <span class="pill">[도구]</span><span class="pill">[도구]</span>
+    </div>
+    <div class="skill-row">
+      <span class="pill">[도구]</span><span class="pill">[도구]</span>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>학력사항</h2>
+    <div class="edu-row">
+      <div class="when">YYYY.MM &ndash; YYYY.MM</div>
+      <div class="what"><b>[학교]</b> [전공] 졸업 <span>([부전공 · 학점])</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>경력사항 <span style="font-size:14px;font-weight:400;color:var(--muted)">(총 [N]년)</span></h2>
+
+    <div class="job">
+      <div class="job-head">
+        <span class="company">(주)회사명</span>
+        <span class="role">[소속] [직급]</span>
+        <span class="when">YYYY.MM &ndash; 재직중</span>
+      </div>
+
+      <!-- 프로젝트 블록: 브리프 이야기 설계 순서 → 나머지 핵심 → 보조(짧게) → 참고. 숫자·표기는 claims.md만 -->
+      <div class="project" style="margin-top:14px">
+        <div class="p-title"><span class="mark">&#9656;</span>[프로젝트명] &middot; [연도]</div>
+        <div class="tagline">[한 줄 태그라인]</div>
+        <div class="field"><span class="tag">배경</span><div class="txt">[문제 1~2문장]</div></div>
+        <div class="field"><span class="tag">한 일</span>
+          <ul><li>[행동 1]</li><li>[행동 2]</li></ul>
+        </div>
+        <div class="field"><span class="tag">성과</span><div class="txt">[결과 수치 1문장: 주장 원장 표기]</div></div>
+        <div class="field"><span class="tag">기여</span><div class="txt">[본인 역할]</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>어학</h2>
+    <div class="edu-row" style="border-bottom:0">
+      <div class="when">YYYY.MM</div>
+      <div class="what"><b>[시험]</b> [점수]</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>자기소개서</h2>
+    <!-- 매 지원마다 새로 쓴다. 규칙은 references/writing-rules.md (두괄식, 저는/제가 금지, 과거형 성과, 포부는 긍정으로 끝냄) -->
+    <div class="intro-item">
+      <div class="h"><span class="dot"></span>지원배경</div>
+      <p>[회사명과 핵심 주장을 첫 문장에 넣은 두괄식 문단]</p>
+    </div>
+
+    <div class="intro-item">
+      <div class="h"><span class="dot"></span>강점 및 경험</div>
+      <p>[회사명과 핵심 주장을 첫 문장에 넣은 두괄식 문단]</p>
+    </div>
+
+    <div class="intro-item">
+      <div class="h"><span class="dot"></span>입사 후 포부</div>
+      <p>[회사명과 핵심 주장을 첫 문장에 넣은 두괄식 문단]</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>포트폴리오</h2>
+    <div class="links">
+      <a href="[링크]">[링크 표시 텍스트]</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>취업우대사항</h2>
+    <dl class="deflist">
+      <dt>보훈대상 여부</dt><dd>&ndash;</dd>
+      <dt>취업보호대상 여부</dt><dd>&ndash;</dd>
+      <dt>고용지원금대상 여부</dt><dd>&ndash;</dd>
+      <dt>장애 여부</dt><dd>&ndash;</dd>
+      <dt>병역사항</dt><dd>[병역 구분 · 기간]</dd>
+    </dl>
+  </section>
+
+  <div class="sign">
+    <div class="oath">위의 모든 기재사항은 사실과 다름없음을 확인합니다.</div>
+    <div class="who">작성자 : {{NAME}}</div>
+  </div>
+
+</div>

@@ -29,6 +29,11 @@
       "name": "repo-health-audit",
       "source": "./plugins/repo-health-audit",
       "description": "Recurring full-repo health check across security/UX/performance/DB lenses: scans the whole codebase (not a diff), files GitHub issues only for P0/P1 findings, and opens auto-fix PRs for the mechanical ones — while deferring to the target repo's own branch/commit/PR conventions."
+    },
+    {
+      "name": "careerfit",
+      "source": "./plugins/careerfit",
+      "description": "Headhunter-style career kit: organize your career history into an evidence-backed store, plan a strategy brief per job posting, then write resume / career description / portfolio with a claims ledger and a final consistency review, and track results to learn what works."
     }
   ]
 }

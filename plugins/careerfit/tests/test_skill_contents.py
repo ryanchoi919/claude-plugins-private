@@ -9,6 +9,7 @@ REQUIRED = {
     "write-career-description": ["scripts/render_md.py", "--break-projects", "--max-pages 3", "[확인 필요]", "심층형",
                                  "공고 요구사항 (원문 발췌) | 대응 경험 | 근거", "기본본 모드"],
     "write-portfolio": ["scripts/build_variant.py", "--kind slide", "order", "결과 지표만", "기본본 모드", "templates/portfolio.html"],
+    "apply": ["references/jd-capture.md", "scripts/status.py", "준비 중", "brief", "review", "## 저장 후 처리", "setup"],
 }
 
 

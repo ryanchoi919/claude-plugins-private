@@ -31,7 +31,7 @@ description: careerfit 공고 탐색. 사람인·잡코리아·비즈니스피�
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/job_search.py fetch <CAREER.md> --out <search>/<YYYY-MM-DD>.json
 ```
 - `<search>`는 `CAREER.md`의 `paths.search` (기본 `search/`). 이미 본 공고는 `<search>/seen.json`으로 `new: false`가 된다
-- bzpp는 헤드리스 Chrome이 필요하다. 없으면 `--sources saramin,jobkorea`로 돌리고 알린다
+- bzpp는 헤드리스 Chrome이 필요하다. 없으면 `--sources saramin,jobkorea`로 돌리고 알린다. `errors`에 샌드박스 안내가 나오면 외부 페이지를 샌드박스 없이 여는 위험을 설명하고, 동의할 때만 `CAREERFIT_CHROME_NO_SANDBOX=1`을 붙여 다시 돌린다
 - 결과의 `errors`(0건·차단 의심)는 숨기지 않고 보고한다. 같은 요청을 반복하지 않는다
 
 ## 3. 1차 추림 (Claude)

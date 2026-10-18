@@ -13,6 +13,7 @@ _sys.path.insert(0, str(_pl.Path(__file__).resolve().parent.parent))
 
 import html
 import json
+import os
 import re
 import subprocess
 import time
@@ -159,12 +160,27 @@ def _get(url: str) -> str:
         return r.read().decode("utf-8", errors="replace")
 
 
+def chrome_args(chrome: str, url: str) -> list:
+    """외부 페이지라 샌드박스를 켠다. 샌드박스가 안 뜨는 환경(컨테이너 root, user namespace 제한)만
+    CAREERFIT_CHROME_NO_SANDBOX=1로 끈다. --user-data-dir를 주지 않으면 헤드리스 Chrome은 매번 새 임시
+    프로필을 써서 사용자 프로필·쿠키를 읽지 않는다 (지정하면 --dump-dom 뒤에 종료되지 않는다)."""
+    args = [chrome, "--headless=new", "--disable-gpu", "--disable-extensions",
+            "--virtual-time-budget=12000", "--dump-dom", url]
+    if os.environ.get("CAREERFIT_CHROME_NO_SANDBOX") == "1":
+        args.insert(2, "--no-sandbox")
+    return args
+
+
 def _render(url: str) -> str:
     """bzpp 목록은 JS로 채워져서 헤드리스 Chrome으로 렌더한 DOM을 읽는다."""
     from scripts.chrome import find_chrome
-    r = subprocess.run([find_chrome(), "--headless=new", "--no-sandbox", "--disable-gpu",
-                        "--virtual-time-budget=12000", "--dump-dom", url],
-                       capture_output=True, text=True, timeout=90)
+    r = subprocess.run(chrome_args(find_chrome(), url), capture_output=True, text=True, timeout=90)
+    if r.returncode != 0 and not r.stdout:
+        hint = ""
+        if "sandbox" in r.stderr.lower() or r.returncode < 0:
+            hint = (" Chrome 샌드박스를 띄우지 못했을 수 있습니다. 이 환경에서 꼭 필요하면"
+                    " CAREERFIT_CHROME_NO_SANDBOX=1로 다시 실행하세요 (외부 페이지를 샌드박스 없이 엽니다)")
+        raise RuntimeError(f"Chrome 렌더 실패 (code {r.returncode}).{hint}")
     return r.stdout
 
 

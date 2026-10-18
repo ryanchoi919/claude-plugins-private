@@ -106,3 +106,12 @@ def test_fetch_uses_renderer_for_bzpp_and_reports_empty():
 def test_cli_requires_keywords(persona_root, capsys):
     assert js.main(["job_search.py", "urls", str(persona_root / "CAREER.md")]) == 1
     assert "search.keywords" in capsys.readouterr().err
+
+
+def test_chrome_args_sandboxed_by_default(monkeypatch):
+    monkeypatch.delenv("CAREERFIT_CHROME_NO_SANDBOX", raising=False)
+    args = js.chrome_args("chrome", "https://www.bzpp.co.kr/x")
+    assert "--no-sandbox" not in args and args[-1] == "https://www.bzpp.co.kr/x"
+    assert not any(a.startswith("--user-data-dir") for a in args)  # 기본 임시 프로필
+    monkeypatch.setenv("CAREERFIT_CHROME_NO_SANDBOX", "1")
+    assert "--no-sandbox" in js.chrome_args("chrome", "https://www.bzpp.co.kr/x")

@@ -38,7 +38,7 @@
 - Python 3 + `pypdf`, `PyYAML`
 - 나눔 폰트 (NanumGothic·NanumMyeongjo) 로컬 설치. `fc-list :lang=ko`로 확인. 웹폰트는 쓰지 않는다
 
-공고 탐색(`scripts/job_search.py`)은 로그인 없이 공개 검색 결과만 읽고 요청 사이 1초 쉰다. 사이트 구조가 바뀌면 `references/job-sources.md`와 파서를 같이 고친다.
+공고 탐색(`scripts/job_search.py`)은 로그인 없이 공개 검색 결과만 읽고 요청 사이 1초 쉰다. 비즈니스피플 목록은 샌드박스를 켠 헤드리스 Chrome(기본 임시 프로필)으로 렌더한다. 샌드박스가 뜨지 않는 환경에서만 `CAREERFIT_CHROME_NO_SANDBOX=1`로 끈다. 사이트 구조가 바뀌면 `references/job-sources.md`와 파서를 같이 고친다.
 
 알려진 한계: 헤드리스 Chrome + 나눔 폰트 PDF는 텍스트 추출 시 공백이 U+0001로 나온다. `pdf_check.py`가 `PDF_ATS_SPACING`(권장)으로 알린다.
 

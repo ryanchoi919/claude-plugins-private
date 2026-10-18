@@ -10,24 +10,35 @@
 ├── applications/<회사> <직무>/    # 지원 폴더
 │   ├── 공고.md  브리프.md  claims.md  진행 상황.md
 │   └── <이름>_<문서종류>_<회사명>.pdf/.html
-└── insights.md                   # 회고 누적
+├── insights.md                   # 회고 누적
+└── search/                       # 공고 탐색 (search 스킬)
+    ├── seen.json  <YYYY-MM-DD>.json
+    └── <YYYY-MM-DD> 탐색.md
 ```
 모든 경로는 `CAREER.md`의 `paths`로 바꿀 수 있다 (예: Obsidian vault라면 `projects: Career/프로젝트`, `applications: Career/지원 이력`, `base: Career`).
 
 ## `CAREER.md` (설정)
 frontmatter 키:
 - `name`, `name_en`(선택), `contact`(`email`·`phone`, `in_documents_only`: 서류에만 쓰는지), `photo`(선택, 경로)
-- `paths`: `projects`, `applications`, `base`, `insights`, `output`(제출 PDF를 둘 곳, 예 `~/temp`). 상대 경로는 `CAREER.md` 위치 기준
+- `paths`: `projects`, `applications`, `base`, `insights`, `output`(제출 PDF를 둘 곳, 예 `~/temp`), `search`(공고 탐색 결과, 기본 `search`). 상대 경로는 `CAREER.md` 위치 기준
 - `market`: `KR`(기본)
 - `career_start`: 첫 경력 시작일(YYYY-MM-DD). 총 경력 연수 검사에 쓴다
 - `filename_pattern`: 기본 `{name}_{doc}_{company}` (범용본은 `{name}_{doc}`)
 - `money_policy`: 절대 금액 표기 허용 여부 (`allow` 기본, 사용자 확인 후 기록)
+- `search`(선택): 공고 탐색 조건 `keywords`·`exclude`·`career_years`·`locations`·`sources`·`pages`·`must`·`prefer`·`updated`. 형식은 `references/job-sources.md`
 
 본문 섹션:
 - `## 문체 선호`: 기본 문체 규칙에 덧붙이거나 바꿀 것
 - `## 고정 표기`: 사용자 고유 용어 표기 (예: "<도구명> MCP: 별도 서버를 만든 것이 아님")
 - `## 귀속 주의`: 누가 제안·승인했는지 헷갈리기 쉬운 사건 목록
 - `## 저장 후 처리`: 파일을 쓴 뒤 사용자 환경에서 해야 할 일 (예: 브랜치 → PR → 머지 → 동기화). 플러그인은 이 절차를 그대로 따른다
+
+setup 처음부터 인터뷰(`references/career-interview.md`)가 채우는 본문 섹션 (재료로 채워도 같은 형식):
+- `## 경력 방향`: 목적, 목표 직무(주력·대안), 목표 산업, 희망 시점, 꼭 지킬 조건(근무지·고용형태·연봉 하한), 피할 것. search가 조건 제안에 쓴다
+- `## 경력 타임라인`: 표 `| 회사 | 기간 | 고용형태 | 직함·직급 | 업종·규모 | 비고 |` (최신순, 공백기는 `(공백)` 행, 넣지 않기로 한 건은 비고 `제외`). 표 아래 회사마다 `### <회사>`: 조직·팀 규모·보고 대상, 책임 범위, `상시 업무`(주기·규모·도구·산출물), `조직 기여`. 이력서 회사 블록의 담당 업무 줄이 여기서 나온다
+- `## 학력·자격`, `## 기술 스택`(실무 주력 / 써 봄)
+- `## 인터뷰 진행`: 마친 층과 날짜 (예: `- 1~4층 완료 (2026-10-19)`, `- 5층: 3개 중 2개`). 끝나지 않은 층이 남으면 setup이 그 층부터 이어간다
+- `## 탐색 조건 메모`: search 조건의 근거와 조정 이력
 
 ## 프로젝트 노트 (이력 저장소)
 frontmatter: `회사`, `역할`, `시작일`, `종료일`, `영역`(목록: AX / 데이터 / 전략기획 / 사업운영 / 마케팅 등, 사용자 정의 가능), `임팩트`(핵심 / 보조 / 참고), `tags`, `aliases`, `created`, `modified`, `version`.

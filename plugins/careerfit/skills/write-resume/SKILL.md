@@ -25,7 +25,7 @@ python3 -c "import sys; sys.path.insert(0, '${CLAUDE_PLUGIN_ROOT}'); from script
 5. HTML·PDF를 지원 폴더에, PDF를 `paths.output`에 같은 이름으로 둔다
 
 ## 기본본 모드
-- `${CLAUDE_PLUGIN_ROOT}/templates/resume.html`에서 시작해 이력 저장소로 채운다. 블록 순서는 `임팩트` 핵심 → 보조 → 참고, 같은 임팩트는 최근순
+- `${CLAUDE_PLUGIN_ROOT}/templates/resume.html`에서 시작해 이력 저장소로 채운다. 회사·기간·직함과 회사 블록의 담당 업무 줄은 `CAREER.md`의 `## 경력 타임라인`(있으면)에서, 학력·자격·기술 스택은 `## 학력·자격`·`## 기술 스택`에서 가져온다. 블록 순서는 `임팩트` 핵심 → 보조 → 참고, 같은 임팩트는 최근순
 - 자기소개서는 회사명 없는 범용 문장 (지원 때 지원배경·포부는 반드시 다시 쓴다)
 - `{{NAME}}`·`{{CONTACT}}`·`{{TAGLINE}}`·`{{TITLE}}`·`{{META}}`를 채운다. 연락처는 `CAREER.md`의 `contact`. 사진은 `CAREER.md`의 `photo`가 있을 때만 PHOTO 주석 자리에 base64로 넣는다 (사진이 든 파일은 커밋하지 않는다)
 - 파일명 `{name}_이력서.html/.pdf`

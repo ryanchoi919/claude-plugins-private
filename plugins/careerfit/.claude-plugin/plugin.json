@@ -1,6 +1,6 @@
 {
   "name": "careerfit",
-  "version": "0.2.0",
-  "description": "헤드헌터처럼 함께 커리어를 정리하고, 공고마다 전략 브리프를 기획하고, 근거 기반으로 이력서·경력기술서·포트폴리오를 쓰고, 지원 결과를 회고하는 플러그인 (setup / update / apply / track / helper).",
+  "version": "0.3.0",
+  "description": "헤드헌터처럼 함께 커리어를 정리하고(빈 상태면 거시→미시 인터뷰로), 사람인·잡코리아·비즈니스피플에서 맞는 공고를 찾고, 공고마다 전략 브리프를 기획하고, 근거 기반으로 이력서·경력기술서·포트폴리오를 쓰고, 지원 결과를 회고하는 플러그인 (setup / update / search / apply / track / helper).",
   "author": { "name": "ryanchoi" }
 }

@@ -1,6 +1,6 @@
 ---
 name: apply
-description: careerfit 공고 단위 지원 진입점. 채용 공고(링크·텍스트·이미지)를 받으면 JD를 캡처하고, 전략 브리프와 주장 원장을 만들어 빈틈만 묻고 승인받은 뒤, 필요한 서류(이력서·경력기술서·포트폴리오)를 기본본에서 파생해 쓰고, 최종 일관성 검수를 거쳐 지원 폴더에 기록한다. 사용자가 공고 링크를 보내거나 "이 회사 지원 준비해줘", "이 공고에 맞춰 서류 만들어줘"라고 할 때 쓴다. CAREER.md나 기본본이 없으면 setup을 먼저 안내한다.
+description: careerfit 공고 단위 지원 진입점. 채용 공고(링크·텍스트·이미지)를 받으면 JD를 캡처하고, 전략 브리프와 주장 원장을 만들어 빈틈만 묻고 승인받은 뒤, 필요한 서류(이력서·경력기술서·포트폴리오)를 기본본에서 파생해 쓰고, 최종 일관성 검수를 거쳐 지원 폴더에 기록한다. 사용자가 공고 링크를 보내거나 "이 회사 지원 준비해줘", "이 공고에 맞춰 서류 만들어줘"라고 할 때, search 스킬에서 공고를 고른 뒤에 쓴다. CAREER.md나 기본본이 없으면 setup을 먼저 안내한다.
 ---
 
 # 공고 단위 지원
@@ -9,6 +9,7 @@ description: careerfit 공고 단위 지원 진입점. 채용 공고(링크·텍
 - 작업 폴더의 `CAREER.md`를 `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/config.py <CAREER.md>`로 읽는다. 없으면 setup 스킬로 안내하고 멈춘다
 - `<base>/`에 기본본 3종이 있는지, 이력 저장소보다 오래되지 않았는지 확인한다 (가장 최근 프로젝트 노트 `modified`와 기본본 파일 수정 시각 비교). 오래됐으면 update를 먼저 권한다
 - `<applications>/`에 같은 회사·직무 폴더가 있으면 새로 만들지 않고 이어서 진행한다
+- search에서 넘어온 공고면 지원 폴더를 만든 뒤 `python3 ${CLAUDE_PLUGIN_ROOT}/scripts/job_search.py mark <search>/seen.json <source:id> 지원`
 
 ## 1. JD 캡처
 - `${CLAUDE_PLUGIN_ROOT}/references/jd-capture.md` 절차로 `<applications>/<회사> <직무>/공고.md`를 만든다

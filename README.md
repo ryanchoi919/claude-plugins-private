@@ -21,7 +21,7 @@ Private repo — Claude Code needs GitHub access to fetch it (`gh auth status`, 
 | [`community-post-kit`](plugins/community-post-kit) | Voice-driven drafting kit for maker-community posts (Disquiet, Indie Hackers, ...) with publish-status tracking |
 | [`gh-issue-flow`](plugins/gh-issue-flow) | GitHub issue/PR lifecycle kit on `gh` cli: create an issue, pick the next one to work on, merge a PR (CI check, merge, cleanup) |
 | [`repo-health-audit`](plugins/repo-health-audit) | Recurring full-repo audit across security/UX/performance/DB lenses; files issues only for P0/P1 findings and opens auto-fix PRs for the mechanical ones |
-| [`careerfit`](plugins/careerfit) | Headhunter-style career kit: evidence-backed career store, per-posting strategy brief, resume / career description / portfolio with a claims ledger and final consistency review, result tracking |
+| [`careerfit`](plugins/careerfit) | Headhunter-style career kit: evidence-backed career store (top-down interview from scratch), job search on Saramin / JobKorea / BusinessPeople, per-posting strategy brief, resume / career description / portfolio with a claims ledger and final consistency review, result tracking |
 
 ## Adding a new plugin
 

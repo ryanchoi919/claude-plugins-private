@@ -4,6 +4,8 @@ JD 링크는 형태가 제각각이라 아래 순서로 시도한다.
 
 1. **일반 웹 링크**: WebFetch로 먼저 시도.
 2. **JobKorea 모바일 링크**(`m.jobkorea.co.kr/info/app_down.asp?Gno=...`): 앱 설치 유도 페이지라 본문이 없다. `Gno` 값을 그대로 써서 데스크톱 URL(`https://www.jobkorea.co.kr/Recruit/GI_Read/<Gno>`)로 재구성.
+2-1. **사람인 링크**(`saramin.co.kr/zf_user/jobs/relay/view?rec_idx=...` 또는 `/jobs/view?rec_idx=...`): 본문은 `https://www.saramin.co.kr/zf_user/jobs/relay/view-detail?rec_idx=<rec_idx>`를 WebFetch로 읽는다.
+2-2. **비즈니스피플 링크**(`bzpp.co.kr/biz/businessDetailView/<id>`): 서버 렌더 HTML이라 WebFetch로 바로 읽힌다. 헤드헌팅 공고는 회사명이 가려져 있으니 `공고.md`의 `회사`는 공고에 드러난 표현(예: "대기업 유통사(헤드헌팅)")으로 두고 사용자에게 실제 회사명을 아는지 묻는다.
 3. **iframe 안에 본문이 있는 경우**: WebFetch가 메타정보만 가져오고 자격요건/담당업무가 비어 있으면, 페이지에서 `GI_Read_Comt_Ifrm?Gno=...` 형태의 iframe URL을 찾아 그 URL 자체를 헤드리스 브라우저로 직접 연다.
    - Chrome 경로: `python3 -c "import sys; sys.path.insert(0, '${CLAUDE_PLUGIN_ROOT}'); from scripts.chrome import find_chrome; print(find_chrome())"`
    - `<chrome> --headless=new --no-sandbox --disable-gpu --dump-dom "<iframe URL>" > dump.html`

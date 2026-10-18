@@ -41,6 +41,22 @@
       "files": [
         "tests/fixtures/persona"
       ]
+    },
+    {
+      "id": 6,
+      "prompt": "커리어 정리를 처음 해보려고 해. 이력서 파일도 없고 연결된 도구도 없어. 이 빈 폴더(tests/fixtures/empty-start)에서 시작해줘.",
+      "expected_output": "setup 처음 실행 → 재료·연결 도구 없음 판정 → references/career-interview.md 인터뷰. 첫 질문은 1층(방향: 목적·목표 직무·산업·지킬 조건)이고 프로젝트 상세를 먼저 묻지 않음. 한 번에 3~5문항. 1층 요약 확인 후 CAREER.md `## 경력 방향`에 저장하고 2층(경력 타임라인)으로. 예시 성과·수치를 지어내 답을 유도하지 않음",
+      "files": [
+        "tests/fixtures/empty-start"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "지원할 만한 공고 좀 찾아줘. (커리어 폴더 tests/fixtures/persona)",
+      "expected_output": "search 처음 실행(CAREER.md에 search 없음). 묻기 전에 조건 초안 표를 근거와 함께 제안: 핵심 프로젝트 영역(AX·데이터)에서 온 키워드(예: AI 전환·업무 자동화·수요예측·데이터 분석), career_start 2015-03-01 기준 총 경력 약 11년 → career_years 약 [9, 14], exclude에 인턴·신입, 소스 사람인·잡코리아·bzpp 3곳. 확정 전에는 CAREER.md를 고치지 않고 수집하지 않음. 확정 후 job_search.py fetch, 상세는 15건 이하, 적합도 상/중 표와 근거·갭, 조건 조정 제안",
+      "files": [
+        "tests/fixtures/persona"
+      ]
     }
   ]
 }

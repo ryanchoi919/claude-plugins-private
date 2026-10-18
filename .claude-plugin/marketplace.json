@@ -33,7 +33,7 @@
     {
       "name": "careerfit",
       "source": "./plugins/careerfit",
-      "description": "Headhunter-style career kit: organize your career history into an evidence-backed store, plan a strategy brief per job posting, then write resume / career description / portfolio with a claims ledger and a final consistency review, and track results to learn what works."
+      "description": "Headhunter-style career kit: organize your career history into an evidence-backed store (top-down interview when starting from nothing), find matching postings on Saramin / JobKorea / BusinessPeople, plan a strategy brief per job posting, then write resume / career description / portfolio with a claims ledger and a final consistency review, and track results to learn what works."
     }
   ]
 }

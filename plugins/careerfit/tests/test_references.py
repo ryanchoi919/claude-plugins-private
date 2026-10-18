@@ -8,9 +8,13 @@ REQUIRED = {
     "attribution-and-facts.md": ["귀속", "[확인 필요", "의사결정", "범위 재정의", "최초", "시간 순서"],
     "confidentiality.md": ["내부 시스템", "실명", "금액", "HTML 주석", "사진"],
     "filenames.md": ["{name}_{doc}_{company}", "<title>", "(주)"],
-    "jd-capture.md": ["GI_Read", "GI_Read_Comt_Ifrm", "이미지", "제출 서류"],
+    "jd-capture.md": ["GI_Read", "GI_Read_Comt_Ifrm", "이미지", "제출 서류", "view-detail", "bzpp"],
+    "job-sources.md": ["saramin", "jobkorea", "bzpp", "career_years", "exclude", "seen.json", "1초", "로그인"],
+    "career-interview.md": ["1층", "2층", "3층", "4층", "5층", "6층", "7층", "MECE", "공백기", "상시 업무",
+                            "## 경력 방향", "## 경력 타임라인", "## 인터뷰 진행", "[확인 필요", "귀속", "지어내지"],
     "korean-career-description-guide.md": ["문제 → 행동 → 결과", "A4 1~3장", "출처"],
-    "schemas.md": ["CAREER.md", "claims.md", "insights.md", "준비 중", "지원 취소", "영역", "임팩트"],
+    "schemas.md": ["CAREER.md", "claims.md", "insights.md", "준비 중", "지원 취소", "영역", "임팩트",
+                   "## 경력 방향", "## 경력 타임라인", "## 인터뷰 진행", "search", "seen.json"],
 }
 
 

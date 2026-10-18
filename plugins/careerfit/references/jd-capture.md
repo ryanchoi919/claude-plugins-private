@@ -4,9 +4,11 @@ JD 링크는 형태가 제각각이라 아래 순서로 시도한다.
 
 1. **일반 웹 링크**: WebFetch로 먼저 시도.
 2. **JobKorea 모바일 링크**(`m.jobkorea.co.kr/info/app_down.asp?Gno=...`): 앱 설치 유도 페이지라 본문이 없다. `Gno` 값을 그대로 써서 데스크톱 URL(`https://www.jobkorea.co.kr/Recruit/GI_Read/<Gno>`)로 재구성.
+2-1. **사람인 링크**(`saramin.co.kr/zf_user/jobs/relay/view?rec_idx=...` 또는 `/jobs/view?rec_idx=...`): 본문은 `https://www.saramin.co.kr/zf_user/jobs/relay/view-detail?rec_idx=<rec_idx>`를 WebFetch로 읽는다.
+2-2. **비즈니스피플 링크**(`bzpp.co.kr/biz/businessDetailView/<id>`): 서버 렌더 HTML이라 WebFetch로 바로 읽힌다. 헤드헌팅 공고는 회사명이 가려져 있으니 `공고.md`의 `회사`는 공고에 드러난 표현(예: "대기업 유통사(헤드헌팅)")으로 두고 사용자에게 실제 회사명을 아는지 묻는다.
 3. **iframe 안에 본문이 있는 경우**: WebFetch가 메타정보만 가져오고 자격요건/담당업무가 비어 있으면, 페이지에서 `GI_Read_Comt_Ifrm?Gno=...` 형태의 iframe URL을 찾아 그 URL 자체를 헤드리스 브라우저로 직접 연다.
    - Chrome 경로: `python3 -c "import sys; sys.path.insert(0, '${CLAUDE_PLUGIN_ROOT}'); from scripts.chrome import find_chrome; print(find_chrome())"`
-   - `<chrome> --headless=new --no-sandbox --disable-gpu --dump-dom "<iframe URL>" > dump.html`
+   - `<chrome> --headless=new --disable-gpu --dump-dom "<iframe URL>" > dump.html` (외부 페이지라 샌드박스를 켠 채로 연다. `--user-data-dir`는 주지 않는다: 헤드리스 기본 임시 프로필을 쓰고, 지정하면 출력 뒤 종료되지 않는다. 샌드박스 오류로 뜨지 않을 때만 사용자에게 알리고 `--no-sandbox`를 붙인다)
    - 그래도 비어 있으면(SPA 하이드레이션 대기 필요) `--virtual-time-budget=8000 --run-all-compositor-stages-before-draw` 추가
    - dump.html에서 script/style 태그를 지우고 HTML 태그를 개행으로 바꿔 텍스트만 추출
 4. **본문이 통짜 이미지인 경우** (채용 공고를 이미지 한 장으로 올리는 ATS): 이미지를 내려받아 Python PIL로 세로 1200~1400px 단위로 잘라 저장한 뒤, Read 도구로 각 조각을 보고 원문을 옮겨 적는다. OCR 도구를 찾지 말고 이 방식을 바로 쓴다.

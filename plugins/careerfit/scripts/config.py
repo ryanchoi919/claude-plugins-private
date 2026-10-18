@@ -16,6 +16,7 @@ DEFAULT_PATHS = {
     "base": "base",
     "insights": "insights.md",
     "output": "output",
+    "search": "search",
 }
 
 
@@ -29,6 +30,7 @@ class Career:
     career_start: date | None = None
     filename_pattern: str = "{name}_{doc}_{company}"
     money_policy: str = "allow"
+    search: dict | None = None
     body: str = ""
 
 
@@ -72,6 +74,7 @@ def load_career(path) -> Career:
         career_start=start,
         filename_pattern=fm.get("filename_pattern", "{name}_{doc}_{company}"),
         money_policy=fm.get("money_policy", "allow"),
+        search=fm.get("search"),
         body=body,
     )
 
@@ -99,4 +102,5 @@ if __name__ == "__main__":
 
     c = load_career(sys.argv[1])
     print(json.dumps({"name": c.name, "paths": {k: str(v) for k, v in c.paths.items()},
-                      "career_start": str(c.career_start) if c.career_start else None}, ensure_ascii=False, indent=2))
+                      "career_start": str(c.career_start) if c.career_start else None,
+                      "search": c.search}, ensure_ascii=False, indent=2))

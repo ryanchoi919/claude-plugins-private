@@ -10,10 +10,10 @@ description: careerfit 최종 일관성 검수. 회사판 서류(이력서·경�
 - 기본본: `<base>/` 폴더. 원장 대신 이력 저장소 전체를 기준으로 한다 (`--claims` 없이 실행, `--company`에는 사용자 이름처럼 어떤 회사와도 겹치지 않는 값)
 - `CAREER.md`는 사용자 작업 폴더의 것 (없으면 setup 스킬로 안내)
 
-## 1. 스크립트 검사 (항목 1의 추출, 5, 6, 8, 9, 16·17의 측정, 18)
+## 1. 스크립트 검사 (항목 1의 추출, 5, 6, 8, 9, 16·17의 측정, 18, 19의 측정)
 ```bash
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/lint_docs.py --career <CAREER.md> --company <회사명> \
-  --claims <지원 폴더>/claims.md \
+  --claims <지원 폴더>/claims.md --jd <지원 폴더>/공고.md --base <base>/<이름>_이력서.html \
   --pair <이력서.html>:<이력서.pdf> --pair <경력기술서.html>:<경력기술서.pdf> --pair <포트폴리오.html>:<포트폴리오.pdf> \
   <이력서.html> <경력기술서.html> <포트폴리오.html> <지원 폴더>/경력기술서.md
 python3 ${CLAUDE_PLUGIN_ROOT}/scripts/pdf_check.py <이력서.pdf> --kind A4
@@ -25,9 +25,10 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/pdf_check.py <포트폴리오.pdf> --kind 
 - PDF 메타데이터(제목·작성자)를 본다: `python3 -c "import sys; from pypdf import PdfReader; print(PdfReader(sys.argv[1]).metadata)" <pdf>`
 - 항목 7 제출 요건(서류 종류·프로젝트 개수·분량·형식·파일명)은 `공고.md` 원문과 직접 대조해 표로 만든다
 - `PDF_ATS_SPACING`은 헤드리스 Chrome + 나눔 폰트 조합에서 공백이 U+0001로 추출되는 현상이다. 채용 시스템이 텍스트를 붙여 읽을 수 있다는 권장 경고로 보여주고, 회사가 PDF 텍스트 파싱을 쓰는지 모르면 그대로 둔다
+- `--jd`·`--base`는 이름에 `이력서`가 든 HTML에만 적용된다. `JD_TERMS_ONLY_IN_INTRO`·`JD_COVERAGE_LOW`(공고 업무 용어가 본문에 없음), `BLOCKS_UNCHANGED_FROM_BASE`(본문 문장이 기본본과 거의 같음)는 권장으로 나오고, 에이전트가 항목 19에서 필수 여부를 판정한다. 기본본 검수에서는 두 옵션을 뺀다
 - 결과 JSON을 모아 둔다
 
-## 2. 에이전트 검사 (항목 1~4, 10~16, 19의 판단)
+## 2. 에이전트 검사 (항목 1~4, 10~16, 19, 20의 판단)
 `consistency-reviewer` 에이전트를 부른다. 프롬프트에 지원 폴더 경로, `CAREER.md` 경로, 프로젝트 노트 폴더, 1단계 결과 요약을 넣는다. 에이전트는 고치지 않는다.
 
 ## 3. 결과 정리와 처리

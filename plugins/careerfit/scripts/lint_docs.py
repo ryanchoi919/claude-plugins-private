@@ -1,4 +1,4 @@
-"""제출 서류 린트: 금지어·타사명·숨은 텍스트·title·주장 원장·기간·버전·링크."""
+"""제출 서류 린트: 금지어·타사명·숨은 텍스트·title·주장 원장·기간·버전·링크·공고 용어 분포·기본본 동일 비율."""
 import sys as _sys, pathlib as _pl
 _sys.path.insert(0, str(_pl.Path(__file__).resolve().parent.parent))
 
@@ -269,6 +269,82 @@ def check_links(text: str, doc, fetch=None) -> list:
     return out
 
 
+JD_SECTION = re.compile(r"^#{1,4}\s*(?:주요\s*업무|담당\s*업무|하는\s*일|업무\s*내용)[^\n]*\n(.*?)(?=^#{1,4}\s|\Z)", re.S | re.M)
+JD_STOP = {"주요", "업무", "관리", "작성", "수립", "진행", "중인", "본사", "담당", "수행", "대한", "위한", "통한", "관련", "내용",
+           "경험", "능력", "보유", "세부", "참석", "운영", "업무가", "개발이", "아닌", "주업무"}
+PARTICLE = re.compile(r"(으로|에서|에게|들의|들을|들|을|를|이|가|은|는|의|에|와|과|로|도|만|임)$")
+INTRO_MARK = "자기소개서"
+
+
+def jd_terms(jd_text: str) -> list:
+    """공고.md의 주요업무(담당업무·하는 일) 절에서 2자 이상 명사 후보를 나온 순서대로 뽑는다. 절이 없으면 빈 목록."""
+    m = JD_SECTION.search(jd_text)
+    if not m:
+        return []
+    out = []
+    for tok in re.findall(r"[가-힣A-Za-z]{2,}", m.group(1)):
+        if len(tok) > 2:
+            tok = PARTICLE.sub("", tok)
+        if len(tok) >= 2 and tok not in JD_STOP and tok not in out:
+            out.append(tok)
+    return out
+
+
+def split_intro(text: str) -> tuple:
+    """이력서 본문과 자기소개서를 첫 '자기소개서' 표시에서 나눈다. 없으면 (전체, '')."""
+    i = text.find(INTRO_MARK)
+    return (text, "") if i == -1 else (text[:i], text[i:])
+
+
+def check_jd_coverage(text: str, terms: list, doc, min_ratio: float = 0.4) -> list:
+    """공고 업무 용어가 이력서 본문(자기소개서 앞)에 나오는지. 자기소개서에만 있으면 첫인상에서 직무가 안 보인다."""
+    if not terms:
+        return []
+    body, intro = split_intro(text)
+    counts = {t: (body.count(t), intro.count(t)) for t in terms}
+    in_body = [t for t, (b, _) in counts.items() if b]
+    only_intro = [t for t, (b, i) in counts.items() if not b and i]
+    summary = ", ".join(f"{t} {b}/{i}" for t, (b, i) in counts.items())
+    out = []
+    if only_intro:
+        out.append(_finding("JD_TERMS_ONLY_IN_INTRO", "권장", doc, ", ".join(only_intro),
+                            f"공고 업무 용어가 자기소개서에만 있고 본문에는 0회: {', '.join(only_intro)} (본문/자기소개서: {summary})"))
+    ratio = len(in_body) / len(terms)
+    if ratio < min_ratio:
+        out.append(_finding("JD_COVERAGE_LOW", "권장", doc, f"{len(in_body)}/{len(terms)}",
+                            f"공고 업무 용어 {len(terms)}개 중 본문에 나온 것 {len(in_body)}개 ({ratio:.0%}). "
+                            f"블록 제목·첫 줄을 공고 용어로 다시 쓸지 검토 (본문/자기소개서: {summary})"))
+    return out
+
+
+def body_segments(path) -> list:
+    """HTML 태그 단위 텍스트 조각(8자 이상) 중 자기소개서 앞부분만. 기본본과 같은 문장인지 비교하는 데 쓴다."""
+    s = Path(path).read_text(encoding="utf-8")
+    s = re.sub(r"<title>.*?</title>", " ", DATA_URI.sub(" ", BLOCKS.sub(" ", COMMENT.sub(" ", s))), flags=re.S)
+    out = []
+    for seg in TAG.split(s):
+        seg = re.sub(r"\s+", " ", _html.unescape(seg)).strip()
+        if INTRO_MARK in seg and len(seg) < 30:
+            break
+        if len(seg) >= 8:
+            out.append(seg)
+    return out
+
+
+def check_base_similarity(doc_html, base_html, doc, threshold: float = 0.8) -> list:
+    """회사판 본문 조각 중 기본본과 똑같은 비율. 높으면 블록 문장을 공고에 맞추지 않은 것."""
+    segs = body_segments(doc_html)
+    if not segs:
+        return []
+    base = set(body_segments(base_html))
+    same = sum(1 for x in segs if x in base)
+    ratio = same / len(segs)
+    if ratio >= threshold:
+        return [_finding("BLOCKS_UNCHANGED_FROM_BASE", "권장", doc, f"{same}/{len(segs)}",
+                         f"본문 문장의 {ratio:.0%}가 기본본과 같음. 브리프의 직무 거리가 '멂'이면 전면 블록 제목·첫 줄을 공고 용어로 다시 쓴다")]
+    return []
+
+
 def known_companies(applications_dir) -> list:
     out = []
     for d in sorted(Path(applications_dir).glob("*/")):
@@ -285,10 +361,11 @@ def known_companies(applications_dir) -> list:
     return out
 
 
-def lint(career_md, company, docs, claims_md=None, pairs=(), ref=None, fetch=None) -> list:
+def lint(career_md, company, docs, claims_md=None, pairs=(), ref=None, fetch=None, jd_md=None, base_html=None) -> list:
     career = load_career(career_md)
     ref = ref or date.today()
     claims = parse_claims(Path(claims_md).read_text(encoding="utf-8")) if claims_md else []
+    terms = jd_terms(Path(jd_md).read_text(encoding="utf-8")) if jd_md else []
     apps = career.paths["applications"]
     known = known_companies(apps) if apps.is_dir() else []
     out = []
@@ -306,6 +383,10 @@ def lint(career_md, company, docs, claims_md=None, pairs=(), ref=None, fetch=Non
         if d.suffix == ".html":
             out += check_title(d, d.stem)
             out += check_hidden(d)
+            if "이력서" in d.stem:
+                out += check_jd_coverage(t, terms, d.name)
+                if base_html:
+                    out += check_base_similarity(d, base_html, d.name)
     for h, p in pairs:
         out += check_version(h, p)
     return out
@@ -320,10 +401,13 @@ def main(argv=None) -> int:
     ap.add_argument("--claims")
     ap.add_argument("--pair", action="append", default=[])
     ap.add_argument("--offline", action="store_true")
+    ap.add_argument("--jd", help="공고.md: 주요업무 용어가 이력서 본문에 나오는지 검사")
+    ap.add_argument("--base", help="기본 이력서 HTML: 회사판 본문이 기본본과 얼마나 같은지 검사")
     ap.add_argument("docs", nargs="+")
     a = ap.parse_args(argv)
     pairs = [tuple(Path(x) for x in p.split(":", 1)) for p in a.pair]
-    fs = lint(a.career, a.company, [Path(d) for d in a.docs], a.claims, pairs, fetch=None if a.offline else _head)
+    fs = lint(a.career, a.company, [Path(d) for d in a.docs], a.claims, pairs, fetch=None if a.offline else _head,
+              jd_md=a.jd, base_html=a.base)
     print(json.dumps(fs, ensure_ascii=False, indent=2))
     return 1 if any(f["severity"] == "필수" for f in fs) else 0
 

@@ -8,7 +8,7 @@ REPO_ROOT = PLUGIN_ROOT.parent.parent
 def test_plugin_json():
     data = json.loads((PLUGIN_ROOT / ".claude-plugin" / "plugin.json").read_text(encoding="utf-8"))
     assert data["name"] == "careerfit"
-    assert data["version"] == "0.4.3"
+    assert data["version"] == "0.4.4"
     assert "헤드헌터" in data["description"] or "headhunter" in data["description"].lower()
 
 

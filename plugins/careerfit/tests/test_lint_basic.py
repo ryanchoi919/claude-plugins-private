@@ -63,3 +63,12 @@ def test_mechanical_jd_label(tmp_path):
                                        "<h2>담당할 업무와 관련 경험</h2>"))
     fs = [f for f in L.find_banned(t, "r.html") if f["rule"] == "MECHANICAL_JD_LABEL"]
     assert len(fs) == 3 and all(f["severity"] == "권장" for f in fs)
+
+
+def test_jd_quote_and_causative(tmp_path):
+    t = L.visible_text(_html(tmp_path, "<p>크럭스데이타는 공고에 “주 업무가 개발이 아닌 사업관리”라고 적었습니다. "
+                                       "기관의 데이터를 모아 보게 하는 사업입니다. 다음 보고에서 확인되게 하겠습니다. "
+                                       "필요하다는 것을 알게 됐습니다.</p>"))
+    fs = L.find_banned(t, "r.html")
+    assert [f["rule"] for f in fs].count("JD_QUOTE") == 1
+    assert [f["rule"] for f in fs].count("CAUSATIVE_PHRASE") == 2  # "알게 됐습니다"는 잡지 않는다

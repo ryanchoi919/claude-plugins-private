@@ -56,3 +56,10 @@ def test_markdown_frontmatter_stripped(tmp_path):
 def test_target_company_short_name_not_flagged():
     fs = L.find_other_companies("CJ올리브영 AX 전략 지원", "CJ올리브영", ["올리브영", "씨제이올리브영"], "r.html")
     assert fs == []
+
+
+def test_mechanical_jd_label(tmp_path):
+    t = L.visible_text(_html(tmp_path, "<h2>공고 대응</h2><th>공고 요구사항 (원문 발췌)</th><th>대응 경험</th>"
+                                       "<h2>담당할 업무와 관련 경험</h2>"))
+    fs = [f for f in L.find_banned(t, "r.html") if f["rule"] == "MECHANICAL_JD_LABEL"]
+    assert len(fs) == 3 and all(f["severity"] == "권장" for f in fs)

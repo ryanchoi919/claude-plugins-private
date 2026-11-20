@@ -33,8 +33,17 @@ BANNED = [
      "공고 문구를 인용해 회사가 적은 내용을 전하는 문장: 내 경험에서 느낀 필요와 판단으로 다시 쓴다"),
     ("CAUSATIVE_PHRASE", "권장", re.compile(r"(?:보게|하게|되게|쓰게|알게)\s*(?:하는|하겠습니다|했습니다|함)(?![가-힣])"),
      "사동·우회 표현 후보: 바로 쓰는 말로 (예: 모아 보게 하는 → 모아 분석하는)"),
+    # 아래 둘과 CONNECTIVE_COMMA는 im-not-ai(https://github.com/epoko77-ai/im-not-ai, MIT) 분류 체계 A·C-11·D 계열에서 정규식으로 잡히는 것만 가져왔다
+    ("TRANSLATIONESE", "권장", re.compile(r"에\s?있어서|[을를]\s?가지고\s?있|되어지[는다며고게기]|되어진|되어졌|에\s?의해(?:서)?(?![가-힣])|(?:에서|(?<!앞)으로|에로|으로부터)의(?![가-힣])"),
+     "번역투 후보: 에 있어서→에서, 가지고 있다→형용사, 되어지다→되다, 에 의해→행위자 주어, ~에서의→풀어쓰기"),
+    ("AI_CLICHE", "권장", re.compile(r"결론적으로|시사하는\s?바|주목할\s?만|할\s?때입니다|시점입니다|단순(?:한|히)\s[^.\n]{0,30}?[을를]\s?넘어"),
+     "AI 관용구 후보: 지우거나 구체 사실로 바꾼다"),
     ("HYPE_CANDIDATE", "권장", re.compile(r"최초|유일|전담|전국|완벽|혁신적"), "과장 수식어 후보: 출처 노트와 대조 필요"),
 ]
+
+# C-11 연결어미 뒤 쉼표. 사람 글에도 가끔 있어 문서당 개수로 본다(im-not-ai 기준 6회+가 강한 신호)
+CONNECTIVE_COMMA = re.compile(r"(?<=[가-힣])(?:했|됐|였|었|았|있|없|않|하|되|이)고,|(?<=[가-힣][가-힣])(?<!그러)(?:지만|면서|며),|(?<=[가-힣])(?:해서|아서|어서),")
+CONNECTIVE_COMMA_MIN = 6
 
 
 def _excerpt(text: str, start: int, end: int) -> str:
@@ -72,6 +81,15 @@ def hidden_text(path) -> list:
         if c and not c.startswith("["):
             out.append(c)
     return out
+
+
+def check_connective_commas(text: str, doc) -> list:
+    hits = list(CONNECTIVE_COMMA.finditer(text))
+    if len(hits) < CONNECTIVE_COMMA_MIN:
+        return []
+    ex = " / ".join(_excerpt(text, m.start(), m.end()).strip() for m in hits[:3])
+    return [_finding("CONNECTIVE_COMMA", "권장", doc, ex,
+                     f"연결어미(~고·~며·~지만·~해서) 뒤 쉼표 {len(hits)}회: 쉼표를 뺀다. 고치면서 새 쉼표를 만들지 않는다")]
 
 
 def find_banned(text: str, doc) -> list:
@@ -379,6 +397,7 @@ def lint(career_md, company, docs, claims_md=None, pairs=(), ref=None, fetch=Non
         d = Path(d)
         t = visible_text(d)
         out += find_banned(t, d.name)
+        out += check_connective_commas(t, d.name)
         out += find_other_companies(t, company, known, d.name)
         out += check_periods(t, d.name)
         if career.career_start:

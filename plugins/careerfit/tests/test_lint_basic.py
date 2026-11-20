@@ -72,3 +72,29 @@ def test_jd_quote_and_causative(tmp_path):
     fs = L.find_banned(t, "r.html")
     assert [f["rule"] for f in fs].count("JD_QUOTE") == 1
     assert [f["rule"] for f in fs].count("CAUSATIVE_PHRASE") == 2  # "알게 됐습니다"는 잡지 않는다
+
+
+def test_ai_tells(tmp_path):
+    t = L.visible_text(_html(tmp_path, "<p>운영에 있어서 경쟁력을 가지고 있습니다. 판단되어진 결과가 시스템에 의해 생성됐고, "
+                                       "현장에서의 역할을 맡았지만, 결론적으로 시사하는 바가 컸습니다. "
+                                       "이제 도약할 때입니다. 단순한 보고를 넘어 실행까지 맡았습니다.</p>"))
+    fs = L.find_banned(t, "r.html")
+    r = rules(fs)
+    assert r.count("TRANSLATIONESE") == 5
+    assert r.count("AI_CLICHE") == 4
+    assert all(f["severity"] == "권장" for f in fs if f["rule"] in ("TRANSLATIONESE", "AI_CLICHE"))
+
+
+def test_connective_commas_counted_per_doc():
+    two = "생성됐고, 역할을 맡았지만, 끝냈습니다."
+    assert L.check_connective_commas(two, "r.html") == []
+    assert L.check_connective_commas(two + " 정의하고, 풀어서, 운영했습니다.", "r.html") == []  # 5회 미만
+    fs = L.check_connective_commas(two + " 정의하고, 풀어서, 검증하며, 공유했고, 운영했습니다.", "r.html")
+    assert rules(fs) == ["CONNECTIVE_COMMA"] and "6회" in fs[0]["message"] and fs[0]["severity"] == "권장"
+
+
+def test_ai_tells_no_false_positive(tmp_path):
+    t = L.visible_text(_html(tmp_path, "<p>선정되어 지원금을 받았습니다. 앞으로의 계획을 세웠습니다. 하지만, 그리고, 그러면서, "
+                                       "재고, 광고, 최고 수준의 물류. 재고 회전 개선 후 손실 축소.</p>"))
+    r = rules(L.find_banned(t, "r.html")) + rules(L.check_connective_commas(t, "r.html"))
+    assert not {"TRANSLATIONESE", "CONNECTIVE_COMMA", "AI_CLICHE"} & set(r)

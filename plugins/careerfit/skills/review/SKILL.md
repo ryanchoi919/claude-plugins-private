@@ -28,7 +28,7 @@ python3 ${CLAUDE_PLUGIN_ROOT}/scripts/pdf_check.py <포트폴리오.pdf> --kind 
 - `--jd`·`--base`는 이름에 `이력서`가 든 HTML에만 적용된다. `JD_TERMS_ONLY_IN_INTRO`·`JD_COVERAGE_LOW`(공고 업무 용어가 본문에 없음), `BLOCKS_UNCHANGED_FROM_BASE`(본문 문장이 기본본과 거의 같음)는 권장으로 나오고, 에이전트가 항목 19에서 필수 여부를 판정한다. 기본본 검수에서는 두 옵션을 뺀다
 - 결과 JSON을 모아 둔다
 
-## 2. 에이전트 검사 (항목 1~4, 10~16, 19, 20의 판단)
+## 2. 에이전트 검사 (항목 1~4, 10~16, 19~22의 판단)
 `consistency-reviewer` 에이전트를 부른다. 프롬프트에 지원 폴더 경로, `CAREER.md` 경로, 프로젝트 노트 폴더, 1단계 결과 요약을 넣는다. 에이전트는 고치지 않는다.
 
 ## 3. 결과 정리와 처리

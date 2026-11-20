@@ -62,3 +62,5 @@ source: apps/website/src/content/updates/ko/2026-07-templates.md
 ## Origin
 
 Sibling to [`blog-content-pipeline`](https://github.com/ryanchoi919/blog-content-pipeline), same portability idea (a project-root doc the skills read instead of hardcoding brand specifics), scoped down to a single manual drafting step instead of a full multi-gate content pipeline — maker-community posts are short-lived and low-stakes enough not to need one.
+
+The Korean AI-tell checklist (`skills/post/references/korean-ai-tells.md`) is a curated subset of [im-not-ai (Humanize KR)](https://github.com/epoko77-ai/im-not-ai)'s taxonomy, MIT-licensed.

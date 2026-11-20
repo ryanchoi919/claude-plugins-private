@@ -35,7 +35,7 @@ Since this is a private repository, Claude Code needs GitHub access to fetch it 
 | `fact-enrich` | Step 4 — verify and enrich facts against the knowledge base |
 | `outline` | Step 5 — H1-H3 structure + FAQ + **2nd approval gate** |
 | `asset-metadata` | Step 6 — visual asset plan + frontmatter + **3rd approval gate** |
-| `draft-write` | Step 7 — full draft in brand voice + **4th approval gate** |
+| `draft-write` | Step 7 — full draft in brand voice (Korean posts also checked against `references/korean-ai-tells.md`) + **4th approval gate** |
 | `image-generate` | Step 8 — produce approved in-body visuals: AI-generate illustrations via a configured backend, or source/capture diagram-and-reference images from the web or official materials + **5th approval gate** |
 | `thumbnail-copy` | Step 9 — hand-written thumbnail/hero display copy, grounded in the draft + **6th approval gate** |
 | `seo-vet` | Step 10 — final checklist vetting + **7th (final) approval gate** |
@@ -44,3 +44,5 @@ Since this is a private repository, Claude Code needs GitHub access to fetch it 
 ## Origin
 
 Ported and generalized from a blog-specific (Eroun Labs / korean-edu) 8-step content pipeline originally written for the Antigravity agent. The step logic and approval-gate structure are preserved; brand specifics were extracted into the `CONSTITUTION.md` convention so the same pipeline works for any blog.
+
+The Korean AI-tell checklist (`skills/draft-write/references/korean-ai-tells.md`) is a curated subset of [im-not-ai (Humanize KR)](https://github.com/epoko77-ai/im-not-ai)'s taxonomy, MIT-licensed.
